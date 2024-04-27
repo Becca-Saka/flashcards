@@ -45,5 +45,25 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Used to add image to generate contents for the flash cards</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>GIDClientID</key>
+	<string>266478406464-ek8t58878nh313m60939j2q8aln6rtfs.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+			<string>com.googleusercontent.apps.266478406464-ek8t58878nh313m60939j2q8aln6rtfs</string>
+			</array> 
+		</dict>
+	</array>
 </dict>
 </plist>

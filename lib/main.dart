@@ -1,13 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flashcards/app/app_routes.dart';
+import 'package:flashcards/app/locator.dart';
+import 'package:flashcards/app/set_up_snackbar_ui.dart';
 import 'package:flashcards/firebase_options.dart';
-import 'package:flashcards/ui/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  setupLocator();
+  setupSnackbarUi();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -21,11 +25,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: StackedService.navigatorKey,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-      ),
-      home: const HomeView(),
+      routes: AppRouter.routes,
+      initialRoute: AppRoutes.splash,
     );
   }
 }
