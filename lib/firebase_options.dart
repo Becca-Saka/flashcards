@@ -50,20 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCo88sGevp48vFZtyhxyHN9pCh3jofcMIY',
-    appId: '1:266478406464:android:9bc92f881578bcf5b288a5',
-    messagingSenderId: '266478406464',
-    projectId: 'flashcards-f8f26',
-    storageBucket: 'flashcards-f8f26.appspot.com',
+    apiKey: 'AIzaSyBr1WlBPLEZAPYg11_eDi3EsPrNi6lYQC0',
+    appId: '1:245376867185:android:3f4f0791019272c22034d0',
+    messagingSenderId: '245376867185',
+    projectId: 'jarvis-security-419415',
+    storageBucket: 'jarvis-security-419415.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBXx45iXX0YG4PzYkl_L9pJNn4Xite5wmQ',
-    appId: '1:266478406464:ios:bf935306bbaa9164b288a5',
-    messagingSenderId: '266478406464',
-    projectId: 'flashcards-f8f26',
-    storageBucket: 'flashcards-f8f26.appspot.com',
-    iosClientId: '266478406464-ek8t58878nh313m60939j2q8aln6rtfs.apps.googleusercontent.com',
+    apiKey: 'AIzaSyABTSF1MqXobxfXjCcW26zk8M6x3cg4ZV4',
+    appId: '1:245376867185:ios:5e259bbcbb8125d52034d0',
+    messagingSenderId: '245376867185',
+    projectId: 'jarvis-security-419415',
+    storageBucket: 'jarvis-security-419415.appspot.com',
+    iosClientId: '245376867185-cbfqc44qg91lbncq0rrcdpv3rqj33rav.apps.googleusercontent.com',
     iosBundleId: 'com.adire.flashcards',
   );
+
 }
