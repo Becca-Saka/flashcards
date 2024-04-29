@@ -79,4 +79,5 @@ class StorageKeys {
   static const String collections = 'collections';
   static String collectionAssets(String collectionId) =>
       'collection/$collectionId';
+  static String questions(String collectionId) => 'questions/$collectionId';
 }
