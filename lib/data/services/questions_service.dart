@@ -1,11 +1,25 @@
 import '../../model/question_model.dart';
 import 'local_storage_service.dart';
 
-abstract class IQuestionsService {}
+abstract class IQuestionsService {
+  Future<void> storeQuestions(
+    String collectionId,
+    List<QuestionModel> questions,
+  );
+
+  List<QuestionModel> getQuestions(String collectionId);
+
+  Future<void> answerQuestion(
+    String collectionId,
+    String questionId,
+    bool answeredCorrectly,
+  );
+}
 
 class QuestionsService extends IQuestionsService {
   final ILocalStorage _localStorage = LocalStorageService();
 
+  @override
   Future<void> storeQuestions(
     String collectionId,
     List<QuestionModel> questions,
@@ -20,6 +34,7 @@ class QuestionsService extends IQuestionsService {
     }
   }
 
+  @override
   List<QuestionModel> getQuestions(String collectionId) {
     try {
       var questions = _localStorage.get<List<Map<String, dynamic>>>(
@@ -33,6 +48,7 @@ class QuestionsService extends IQuestionsService {
     }
   }
 
+  @override
   Future<void> answerQuestion(
     String collectionId,
     String questionId,
