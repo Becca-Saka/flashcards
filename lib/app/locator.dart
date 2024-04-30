@@ -1,3 +1,5 @@
+import 'package:flashcards/data/services/collection_service.dart';
+import 'package:flashcards/data/services/local_storage_service.dart';
 import 'package:flashcards/ui/auth/user_view_model.dart';
 import 'package:flashcards/ui/collections/collections_viewmodel.dart';
 import 'package:get_it/get_it.dart';
@@ -12,4 +14,6 @@ void setupLocator() {
   locator.registerLazySingleton<NavigationService>(() => NavigationService());
   locator.registerLazySingleton<SnackbarService>(() => SnackbarService());
   locator.registerLazySingleton<DialogService>(() => DialogService());
+  locator.registerLazySingleton<ILocalStorage>(() => LocalStorageService());
+  locator.registerLazySingleton<ICollectionService>(() => CollectionService());
 }

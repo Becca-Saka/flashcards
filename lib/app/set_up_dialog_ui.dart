@@ -9,6 +9,7 @@ void setupDialogUi() {
   final service = locator<DialogService>();
   service.registerCustomDialogBuilders({
     DialogType.create: (context, request, completer) => CreateCollectionView(),
-    DialogType.quizProgress: (context, request, completer) => QuizProgresView()
+    DialogType.quizProgress: (context, request, completer) =>
+        const QuizProgresView()
   });
 }

@@ -1,80 +1,72 @@
+import 'dart:convert';
+
+import 'package:uuid/uuid.dart';
+
+import 'collection_file.dart';
+
 class CollectionModel {
+  final String uid;
   final String name;
   final String description;
-  final String? uid;
   final List<CollectionFile>? files;
+  final DateTime updatedAt;
+
   CollectionModel({
+    required this.uid,
     required this.name,
     required this.description,
-    this.uid,
     this.files = const [],
+    required this.updatedAt,
   });
 
+  CollectionModel.initial({
+    required this.name,
+    required this.description,
+  })  : uid = const Uuid().v4(),
+        files = [],
+        updatedAt = DateTime.now();
+
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    return {
+      'uid': uid,
       'name': name,
       'description': description,
-      'uid': uid,
       'files': files?.map((x) => x.toMap()).toList(),
+      'updated_at': updatedAt.millisecondsSinceEpoch,
     };
   }
 
   factory CollectionModel.fromMap(Map<String, dynamic> map) {
     return CollectionModel(
-      name: map['name'] as String,
-      description: map['description'] as String,
-      uid: map['uid'] as String,
+      uid: map['uid'] ?? '',
+      name: map['name'] ?? '',
+      description: map['description'] ?? '',
       files: map['files'] != null
-          ? List<CollectionFile>.from((map['files'] as List)
-              .map((x) => CollectionFile.fromMap(x as Map<String, dynamic>)))
+          ? List<CollectionFile>.from(
+              map['files']?.map((x) => CollectionFile.fromMap(x)))
           : null,
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updated_at']),
     );
   }
 
   CollectionModel copyWith({
+    String? uid,
     String? name,
     String? description,
-    String? uid,
     List<CollectionFile>? files,
+    DateTime? updatedAt,
   }) {
     return CollectionModel(
+      uid: uid ?? this.uid,
       name: name ?? this.name,
       description: description ?? this.description,
-      uid: uid ?? this.uid,
       files: files ?? this.files,
-    );
-  }
-}
-
-class CollectionFile {
-  final String name;
-  final String path;
-  CollectionFile({
-    required this.name,
-    required this.path,
-  });
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'path': path,
-    };
-  }
-
-  factory CollectionFile.fromMap(Map<String, dynamic> map) {
-    return CollectionFile(
-      name: map['name'] as String,
-      path: map['path'] as String,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
-  CollectionFile copyWith({
-    String? name,
-    String? path,
-  }) {
-    return CollectionFile(
-      name: name ?? this.name,
-      path: path ?? this.path,
-    );
-  }
+  String toJson() => json.encode(toMap());
+
+  factory CollectionModel.fromJson(String source) =>
+      CollectionModel.fromMap(json.decode(source));
 }

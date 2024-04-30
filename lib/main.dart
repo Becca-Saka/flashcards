@@ -3,6 +3,7 @@ import 'package:flashcards/app/app_routes.dart';
 import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/app/set_up_dialog_ui.dart';
 import 'package:flashcards/app/set_up_snackbar_ui.dart';
+import 'package:flashcards/data/services/local_storage_service.dart';
 import 'package:flashcards/firebase_options.dart';
 import 'package:flashcards/shared/app_text_style.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +13,19 @@ import 'package:stacked_services/stacked_services.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  setupLocator();
-  setupSnackbarUi();
-  setupDialogUi();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  _setUpServices();
   runApp(const MainApp());
+}
+
+void _setUpServices() {
+  setupLocator();
+  setupSnackbarUi();
+  setupDialogUi();
+  locator<ILocalStorage>().init();
 }
 
 class MainApp extends StatelessWidget {

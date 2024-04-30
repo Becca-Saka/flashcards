@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,12 +35,12 @@ class LocalStorageService implements ILocalStorage {
   }
 
   @override
-  Future<int?> add(String key, {required dynamic value}) async {
+  Future<void> add(String key, {required dynamic value}) async {
     try {
-      return await _box.add(value);
+      return await _box.put(key, jsonEncode(value));
     } catch (e) {
       _log.e(e);
-      return null;
+      return;
     }
   }
 
@@ -54,7 +56,7 @@ class LocalStorageService implements ILocalStorage {
   @override
   T? get<T>(String key, {T? def}) {
     try {
-      final res = _box.get(key) as T?;
+      final res = jsonDecode(_box.get(key)) as T?;
       return res ?? def;
     } catch (e) {
       _log.e(e);

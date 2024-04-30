@@ -2,25 +2,25 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flashcards/app/app_routes.dart';
 import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/app/set_up_dialog_ui.dart';
+import 'package:flashcards/data/services/collection_service.dart';
 import 'package:flashcards/data/services/file_picker_service.dart';
 import 'package:flashcards/model/collection_model.dart';
 import 'package:flashcards/model/quiz_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
+import '../../model/collection_file.dart';
+
 class CollectionsViewModel extends BaseViewModel {
   final DialogService _dialogService = locator<DialogService>();
   final NavigationService _navigationService = locator<NavigationService>();
   final FilePickerService _filePickerService = FilePickerService();
   final CarouselController carouselController = CarouselController();
+  final _collectionService = locator<ICollectionService>();
+
   int carouselPage = 0;
-  final List<CollectionModel> collections = [
-    CollectionModel(
-      name: 'Physics 101',
-      description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla euismod, nisl eget aliquam',
-    )
-  ];
+  List<CollectionModel> get collections => _collectionService.collections;
+
   final List<QuizModel> quizzes = [
     QuizModel(
       title: 'What is 1 + 1?',
@@ -59,13 +59,13 @@ class CollectionsViewModel extends BaseViewModel {
     description = value;
   }
 
-  void saveCollection() {
+  Future<void> saveCollection() async {
     _navigationService.back();
-    collections.add(CollectionModel(
+    await _collectionService.createCollection(CollectionModel.initial(
       name: collectionName!,
       description: description!,
     ));
-
+    notifyListeners();
     notifyListeners();
   }
 
@@ -83,7 +83,8 @@ class CollectionsViewModel extends BaseViewModel {
       collections[index] = collections[index].copyWith(
         files: [
           ...collections[index].files!,
-          ...files.map((e) => CollectionFile(name: e.name, path: e.path)),
+          ...files
+              .map((e) => CollectionFile(id: '', name: e.name, path: e.path)),
         ],
       );
       if (selectedIndex == null) {

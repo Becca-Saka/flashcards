@@ -1,6 +1,7 @@
 import 'package:flashcards/data/services/local_storage_service.dart';
 
-import '../../model/collections_model.dart';
+import '../../model/collection_file.dart';
+import '../../model/collection_model.dart';
 
 abstract class ICollectionService {
   Future<void> createCollection(CollectionModel collection);
@@ -11,16 +12,16 @@ abstract class ICollectionService {
 
   Future<void> addAssetsToCollection(
     String collectionId,
-    List<CollectionAssetModel> assets,
+    List<CollectionFile> assets,
   );
 
   Future<void> removeAssetsFromCollection(
     String collection,
-    CollectionAssetModel asset,
+    CollectionFile asset,
   );
 }
 
-class ApiCollectionService implements ICollectionService {
+class CollectionService implements ICollectionService {
   final ILocalStorage _localStorage = LocalStorageService();
 
   /// Fetches the collections from the local storage. If there are no collections
@@ -31,13 +32,12 @@ class ApiCollectionService implements ICollectionService {
   @override
   Future<void> createCollection(CollectionModel collection) async {
     try {
-      var collections = _localStorage.get<List<Map<String, dynamic>>>(
+      var collections = this.collections;
+      collections.add(collection);
+      await _localStorage.add(
         StorageKeys.collections,
-        def: [],
+        value: collections.map((e) => e.toMap()).toList(),
       );
-      collections ??= [];
-      collections.add(collection.toMap());
-      await _localStorage.add(StorageKeys.collections, value: collections);
     } on Exception catch (e) {
       throw Exception('Failed to create collection: $e');
     }
@@ -52,16 +52,13 @@ class ApiCollectionService implements ICollectionService {
   @override
   Future<void> deleteCollection(String collectionId) async {
     try {
-      var collections = _localStorage.get<List<Map<String, dynamic>>>(
-        StorageKeys.collections,
-        def: [],
-      );
-      collections ??= [];
+      var collections = this.collections;
       if (collections.isEmpty) return;
-      collections.removeWhere(
-        (item) => CollectionModel.fromMap(item).id == collectionId,
+      collections.removeWhere((item) => item.uid == collectionId);
+      await _localStorage.add(
+        StorageKeys.collections,
+        value: collections.map((e) => e.toMap()).toList(),
       );
-      await _localStorage.add(StorageKeys.collections, value: collections);
     } on Exception catch (e) {
       throw Exception('Failed to delete collection: $e');
     }
@@ -74,7 +71,7 @@ class ApiCollectionService implements ICollectionService {
   @override
   List<CollectionModel> get collections {
     try {
-      var collections = _localStorage.get<List<Map<String, dynamic>>>(
+      var collections = _localStorage.get<List>(
         StorageKeys.collections,
         def: [],
       );
@@ -94,7 +91,7 @@ class ApiCollectionService implements ICollectionService {
   @override
   Future<void> addAssetsToCollection(
     String collectionId,
-    List<CollectionAssetModel> assets,
+    List<CollectionFile> assets,
   ) async {
     try {
       var storedAssets = _localStorage.get<List<Map<String, dynamic>>>(
@@ -118,7 +115,7 @@ class ApiCollectionService implements ICollectionService {
   @override
   Future<void> removeAssetsFromCollection(
     String collection,
-    CollectionAssetModel asset,
+    CollectionFile asset,
   ) async {
     try {
       var storedAssets = _localStorage.get<List<Map<String, dynamic>>>(
@@ -127,7 +124,7 @@ class ApiCollectionService implements ICollectionService {
       );
       storedAssets ??= [];
       storedAssets.removeWhere(
-        (item) => CollectionAssetModel.fromMap(item).id == asset.id,
+        (item) => CollectionFile.fromMap(item).id == asset.id,
       );
       await _localStorage.add(StorageKeys.collections, value: storedAssets);
     } on Exception catch (e) {
