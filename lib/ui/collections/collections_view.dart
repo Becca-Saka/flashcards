@@ -13,7 +13,6 @@ class CollectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<CollectionsViewModel>.reactive(
       viewModelBuilder: () => CollectionsViewModel(),
-      disposeViewModel: true,
       builder: (context, controller, child) {
         return Scaffold(
           appBar: CustomAppBar(

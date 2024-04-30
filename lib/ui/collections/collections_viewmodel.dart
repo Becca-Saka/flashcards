@@ -138,10 +138,10 @@ class CollectionsViewModel extends BaseViewModel {
     }
     _collectionService.currentCollection = collection;
     await _navigationService.navigateTo(AppRoutes.quiz);
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _collectionService.currentCollection = null;
-      notifyListeners();
-    });
+    // Future.delayed(const Duration(milliseconds: 500), () {
+    _collectionService.currentCollection = null;
+    notifyListeners();
+    // });
   }
 
   void answerQuiz(CarouselController carouselController, bool isCorrect) {
@@ -174,5 +174,20 @@ class CollectionsViewModel extends BaseViewModel {
         notifyListeners();
       }
     });
+  }
+
+  void restartQuiz() {
+    try {
+      final collection = selectedCollection!;
+      _navigationService.popRepeated(2);
+      openQuiz(collection: collection, shouldReset: true);
+    } on Exception catch (e) {
+      _log.e(e);
+      _snackbarService.showCustomSnackBar(
+        variant: SnackbarType.error,
+        message: "Something went wrong",
+        duration: const Duration(seconds: 3),
+      );
+    }
   }
 }

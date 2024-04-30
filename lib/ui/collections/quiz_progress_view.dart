@@ -1,4 +1,3 @@
-import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/shared/app_button.dart';
 import 'package:flashcards/shared/app_spacing.dart';
 import 'package:flashcards/shared/app_text_style.dart';
@@ -14,8 +13,7 @@ class QuizProgresView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CollectionsViewModel>.reactive(
-        viewModelBuilder: () => locator<CollectionsViewModel>(),
-        disposeViewModel: false,
+        viewModelBuilder: () => CollectionsViewModel(),
         builder: (context, controller, child) {
           return Dialog(
             child: Container(

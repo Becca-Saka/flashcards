@@ -1,4 +1,3 @@
-import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
@@ -12,7 +11,7 @@ class AllCollectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CollectionsViewModel>.reactive(
-      viewModelBuilder: () => locator<CollectionsViewModel>(),
+      viewModelBuilder: () => CollectionsViewModel(),
       builder: (context, controller, child) {
         return Scaffold(
           appBar: const CustomAppBar(

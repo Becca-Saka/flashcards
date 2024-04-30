@@ -94,8 +94,8 @@ class GeminiService extends IGeminiService {
               {"text": Prompts.first},
               // {
               //   "fileData": {
-              //     "mimeType": files.first.type.mimeType,
-              //     "fileUri": File(files.first.path).readAsBytesSync(),
+              //     "mimeType": files.first.mimeType,
+              //     "fileUri": files.first.url,
               //   },
               // },
             ]
@@ -127,6 +127,9 @@ class GeminiService extends IGeminiService {
       return (parsedData["flashcards"] as List)
           .map((e) => QuizModel.fromMap(e, true))
           .toList();
+    } on DioException catch (e) {
+      _log.e(e.response?.data);
+      throw Exception(e.message);
     } on Exception catch (e) {
       _log.e(e);
       rethrow;

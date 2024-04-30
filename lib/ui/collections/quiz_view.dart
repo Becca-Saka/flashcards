@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/shared/custom_expansion_tile.dart';
 import 'package:flashcards/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +15,8 @@ class QuizView extends StatelessWidget {
   Widget build(BuildContext context) {
     final carouselController = CarouselController();
     return ViewModelBuilder<CollectionsViewModel>.reactive(
-      viewModelBuilder: () => locator<CollectionsViewModel>(),
+      viewModelBuilder: () => CollectionsViewModel(),
       onViewModelReady: (viewModel) => viewModel.initQuiz(carouselController),
-      disposeViewModel: false,
       builder: (context, controller, child) {
         return Scaffold(
           appBar: CustomAppBar(
