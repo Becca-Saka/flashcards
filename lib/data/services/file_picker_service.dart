@@ -6,7 +6,16 @@ class FilePickerService {
   final filePicker = FilePicker.platform;
 
   Future<List<XFile>?> pickFile() async {
-    final file = await filePicker.pickFiles();
+    final file = await filePicker.pickFiles(
+      type: FileType.custom,
+      allowMultiple: true,
+      allowedExtensions: [
+        'pdf',
+        'png',
+        'jpg',
+        'jpeg',
+      ],
+    );
 
     return file?.files.map((e) => e.xFile).toList();
   }

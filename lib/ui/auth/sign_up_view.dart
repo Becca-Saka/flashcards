@@ -42,8 +42,11 @@ class SignUpView extends StatelessWidget {
                         const AppSpacing(v: 16),
                         AppButton.outlined(
                           title: 'Continue with Google',
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                          textStyle: AppTextStyle.medium14,
                           prefix: const AppIcons(
                             icon: AppIconData.google,
+                            size: 24,
                           ),
                           isLoading: controller.isGoogleBusy,
                           onPressed: controller.logInWithGoogle,
@@ -91,7 +94,7 @@ class SignUpView extends StatelessWidget {
                               AppValidators.validateConfirmPassword(
                                   controller.password, value),
                         ),
-                        const SizedBox(height: 16.0),
+                        const SizedBox(height: 30.0),
                         AppButton(
                           title: 'Sign up',
                           textColor: Colors.white,
@@ -105,18 +108,18 @@ class SignUpView extends StatelessWidget {
                             }
                           },
                         ),
-                        const SizedBox(height: 16.0),
+                        const SizedBox(height: 30.0),
                         Center(
                           child: RichText(
                               text: TextSpan(
                             children: [
                               TextSpan(
                                 text: 'Have an account? ',
-                                style: AppTextStyle.light14,
+                                style: AppTextStyle.medium14,
                               ),
                               TextSpan(
                                 text: 'Log in',
-                                style: AppTextStyle.light14.copyWith(
+                                style: AppTextStyle.medium14.copyWith(
                                   decoration: TextDecoration.underline,
                                 ),
                                 recognizer: TapGestureRecognizer()

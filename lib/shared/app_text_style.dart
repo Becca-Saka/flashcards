@@ -1,58 +1,76 @@
+import 'package:flashcards/shared/app_colors.dart';
 import 'package:flutter/material.dart';
 
 abstract class AppTextStyle {
+  static const String fontFamily = 'Manrope';
+
   /// Base text style
   static const TextStyle _baseTextStyle = TextStyle(
-      fontFamily: 'SF Pro',
-      fontWeight: AppFontWeight.regular,
-      letterSpacing: -0.3,
-      color: Colors.black);
+    fontFamily: fontFamily,
+    fontWeight: AppFontWeight.regular,
+    letterSpacing: -0.3,
+    color: AppColors.black100,
+  );
 
-  ///SF Pro 10
+  ///Manrope 10
   static TextStyle get regular10 => _baseTextStyle.copyWith(fontSize: 10);
 
-  ///SF Pro medium 10
+  ///Manrope medium 10
   static TextStyle get medium10 =>
       regular10.copyWith(fontWeight: AppFontWeight.medium);
 
-  ///DMSans 12
+  ///Manrope bold 10
+  static TextStyle get semiBold10 =>
+      regular10.copyWith(fontWeight: AppFontWeight.semiBold);
+
+  ///Manrope 12
   static TextStyle get regular12 => _baseTextStyle.copyWith(fontSize: 12);
 
-  ///SF Pro medium 14
+  ///Manrope medium 14
   static TextStyle get medium14 => regular10.copyWith(
         fontWeight: AppFontWeight.medium,
         fontSize: 14,
       );
 
-  ///SF Pro 14
+  ///Manrope 14
   static TextStyle get regular14 => _baseTextStyle.copyWith(fontSize: 14);
 
-  ///DMSans light 14
+  ///Manrope light 14
   static TextStyle get light14 =>
       regular14.copyWith(fontWeight: AppFontWeight.light);
 
-  ///SF Pro bold 14
+  ///Manrope bold 14
   static TextStyle get semibold14 =>
       regular16.copyWith(fontWeight: AppFontWeight.semiBold);
 
-  ///SF Pro 16
+  ///Manrope 16
   static TextStyle get regular16 => _baseTextStyle.copyWith(fontSize: 16);
 
-  ///DMSans medium 16
+  ///Manrope medium 16
   static TextStyle get medium16 => regular10.copyWith(
         fontWeight: AppFontWeight.medium,
         fontSize: 16,
       );
 
-  ///SF Pro bold 16
+  ///Manrope bold 16
   static TextStyle get bold16 =>
       regular16.copyWith(fontWeight: AppFontWeight.bold);
 
-  ///DMSans bold 24
-  static TextStyle get semibold24 => regular16.copyWith(
-        fontWeight: AppFontWeight.semiBold,
-        fontSize: 24,
+  ///Manrope bold 16
+  static TextStyle get extraBold16 => regular16.copyWith(
+        fontWeight: AppFontWeight.extraBold,
       );
+
+  ///Manrope  24
+  static TextStyle get regular24 => _baseTextStyle.copyWith(fontSize: 24);
+
+  ///Manrope bold 24
+  static TextStyle get semibold24 =>
+      regular24.copyWith(fontWeight: AppFontWeight.semiBold);
+
+  ///Manrope bold 24
+  static TextStyle get extraBold24 =>
+      regular24.copyWith(fontWeight: AppFontWeight.extraBold);
 }
 
 abstract class AppFontWeight {

@@ -23,6 +23,7 @@ class UserViewModel extends BaseViewModel {
   String? confirmPassword;
 
   String? email;
+  int currentIndex = 1;
 
   void updateEmail(String value) {
     email = value;
@@ -43,8 +44,6 @@ class UserViewModel extends BaseViewModel {
   void updateConfirmPassword(String value) {
     confirmPassword = value;
   }
-
-  void checkLoginStatus() {}
 
   Future<void> createAccount() async {
     try {
@@ -115,7 +114,6 @@ class UserViewModel extends BaseViewModel {
 
   Future<void> checkAuthStatus() async {
     try {
-      await _firebaseService.signOut();
       final user = _firebaseService.currentUser;
       if (user != null) {
         currentUser = await _firebaseService.getCurrentUserData();
@@ -128,6 +126,12 @@ class UserViewModel extends BaseViewModel {
     }
   }
 
+  Future<void> signOut() async {
+    await _firebaseService.signOut();
+
+    _navigationService.clearStackAndShow(AppRoutes.signIn);
+  }
+
   void navigateForgotPassword() =>
       _navigationService.navigateTo(AppRoutes.forgotPassword);
 
@@ -136,4 +140,13 @@ class UserViewModel extends BaseViewModel {
   }
 
   void navigateToSignUp() => _navigationService.navigateTo(AppRoutes.signUp);
+
+  void onItemTap(int index) {
+    if (index == 0) {
+      signOut();
+    } else {
+      currentIndex = index;
+      notifyListeners();
+    }
+  }
 }

@@ -1,5 +1,8 @@
 import 'package:flashcards/ui/auth/sign_in_view.dart';
 import 'package:flashcards/ui/auth/sign_up_view.dart';
+import 'package:flashcards/ui/collections/collections_view.dart';
+import 'package:flashcards/ui/collections/quiz_result_view.dart';
+import 'package:flashcards/ui/collections/quiz_view.dart';
 import 'package:flashcards/ui/dashboard_view.dart';
 import 'package:flashcards/ui/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +14,10 @@ class AppRoutes {
   static const String splash = '/splash';
 
   static const String forgotPassword = '/forgot_password';
+
+  static const String collectionDetail = '/collection_detail';
+  static const String quiz = '/quiz';
+  static const String quizResult = '/quizResult';
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -20,7 +27,10 @@ class AppRouter {
     AppRoutes.splash: (context) => const SplashView(),
     AppRoutes.signIn: (context) => SignInView(),
     AppRoutes.signUp: (context) => SignUpView(),
-    AppRoutes.dashboard: (context) => const DashboardView(),
+    AppRoutes.dashboard: (context) => DashboardView(),
+    AppRoutes.collectionDetail: (context) => const CollectionView(),
+    AppRoutes.quiz: (context) => const QuizView(),
+    AppRoutes.quizResult: (context) => const QuizResultView(),
   };
 }
 

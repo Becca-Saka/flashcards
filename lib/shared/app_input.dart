@@ -67,10 +67,10 @@ class _AppInputState extends State<AppInput> {
 
   bool get isPassword => widget.keyboardType == TextInputType.visiblePassword;
   OutlineInputBorder _border(Color color) => OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(5.0),
         borderSide: BorderSide(
           color: color,
-          width: 0.5,
+          width: 1,
         ),
       );
   @override
@@ -106,8 +106,8 @@ class _AppInputState extends State<AppInput> {
           filled: true,
           hintText: widget.hintText,
           counterStyle: const TextStyle(fontSize: 0),
-          hintStyle: AppTextStyle.medium14.copyWith(
-            color: AppColors.grey300,
+          hintStyle: AppTextStyle.regular12.copyWith(
+            color: AppColors.black100.withOpacity(0.5),
           ),
           errorStyle: AppTextStyle.light14.copyWith(
             color: Colors.red,
@@ -116,15 +116,17 @@ class _AppInputState extends State<AppInput> {
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   child: AppIcons(
-                    icon:
-                        obscureText ? AppIconData.eyesClosed : AppIconData.eyes,
+                    icon: obscureText
+                        ? AppIconData.eyesClosed
+                        : AppIconData.eyeOutlined,
                     size: 16,
+                    color: AppColors.black100,
                     onTap: _updateVisibility,
                   ),
                 )
               : null,
-          border: _border(AppColors.grey400),
-          enabledBorder: _border(AppColors.grey400),
+          border: _border(AppColors.black100),
+          enabledBorder: _border(AppColors.black100),
           focusedBorder: _border(AppColors.primaryColor),
           errorBorder: _border(Colors.red),
           focusedErrorBorder: _border(Colors.red),

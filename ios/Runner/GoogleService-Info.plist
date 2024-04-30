@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>266478406464-ek8t58878nh313m60939j2q8aln6rtfs.apps.googleusercontent.com</string>
+	<string>245376867185-cbfqc44qg91lbncq0rrcdpv3rqj33rav.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.266478406464-ek8t58878nh313m60939j2q8aln6rtfs</string>
+	<string>com.googleusercontent.apps.245376867185-cbfqc44qg91lbncq0rrcdpv3rqj33rav</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBXx45iXX0YG4PzYkl_L9pJNn4Xite5wmQ</string>
+	<string>AIzaSyABTSF1MqXobxfXjCcW26zk8M6x3cg4ZV4</string>
 	<key>GCM_SENDER_ID</key>
-	<string>266478406464</string>
+	<string>245376867185</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.adire.flashcards</string>
 	<key>PROJECT_ID</key>
-	<string>flashcards-f8f26</string>
+	<string>jarvis-security-419415</string>
 	<key>STORAGE_BUCKET</key>
-	<string>flashcards-f8f26.appspot.com</string>
+	<string>jarvis-security-419415.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:266478406464:ios:bf935306bbaa9164b288a5</string>
+	<string>1:245376867185:ios:5e259bbcbb8125d52034d0</string>
 </dict>
 </plist>
