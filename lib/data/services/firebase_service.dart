@@ -102,7 +102,6 @@ class FirebaseService {
       await signOut();
       return true;
     } on FirebaseAuthException catch (e) {
-      // debugPrint('${e.message}');
       final message = AuthExceptionHandler.handleFirebaseAuthException(e);
       debugPrint('$message');
       throw AuthException(message);
@@ -117,7 +116,6 @@ class FirebaseService {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return await getCurrentUserData();
     } on FirebaseAuthException catch (e) {
-      // debugPrint('${e.message}');
       final message = AuthExceptionHandler.handleFirebaseAuthException(e);
       debugPrint('$message');
       throw AuthException(message);

@@ -35,13 +35,16 @@ class SignInView extends StatelessWidget {
                         const SizedBox(height: 40.0),
                         Text(
                           'Sign in',
-                          style: AppTextStyle.bold16,
+                          style: AppTextStyle.extraBold24,
                         ),
-                        const AppSpacing(v: 100),
+                        const AppSpacing(v: 107),
                         AppButton.outlined(
                           title: 'Continue with Google',
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                          textStyle: AppTextStyle.medium14,
                           prefix: const AppIcons(
                             icon: AppIconData.google,
+                            size: 24,
                           ),
                           isLoading: controller.isGoogleBusy,
                           onPressed: controller.logInWithGoogle,
@@ -57,7 +60,7 @@ class SignInView extends StatelessWidget {
                           onChanged: controller.updateEmail,
                           validator: AppValidators.validateEmail,
                         ),
-                        const AppSpacing(v: 12),
+                        const AppSpacing(v: 15),
                         AppInput(
                           hintText: 'Password',
                           initialValue: controller.password,
@@ -65,7 +68,7 @@ class SignInView extends StatelessWidget {
                           keyboardType: TextInputType.visiblePassword,
                           validator: AppValidators.validatePassword,
                         ),
-                        const AppSpacing(v: 6),
+                        const AppSpacing(v: 21),
                         Align(
                           alignment: Alignment.centerRight,
                           child: GestureDetector(
@@ -74,13 +77,14 @@ class SignInView extends StatelessWidget {
                             },
                             child: Text(
                               'Forgot password?',
-                              style: AppTextStyle.light14.copyWith(
+                              style: AppTextStyle.regular12.copyWith(
                                 decoration: TextDecoration.underline,
+                                color: AppColors.black50,
                               ),
                             ),
                           ),
                         ),
-                        const AppSpacing(v: 32),
+                        const AppSpacing(v: 33),
                         AppButton(
                           title: 'Sign In',
                           isLoading: controller.isBusy,
@@ -92,7 +96,7 @@ class SignInView extends StatelessWidget {
                             }
                           },
                         ),
-                        const AppSpacing(v: 16),
+                        const AppSpacing(v: 30),
                         Center(
                           child: GestureDetector(
                             onTap: () {
@@ -103,11 +107,11 @@ class SignInView extends StatelessWidget {
                               children: [
                                 TextSpan(
                                   text: 'Don\'t have an account? ',
-                                  style: AppTextStyle.light14,
+                                  style: AppTextStyle.medium14,
                                 ),
                                 TextSpan(
                                   text: 'Sign Up',
-                                  style: AppTextStyle.light14.copyWith(
+                                  style: AppTextStyle.medium14.copyWith(
                                     decoration: TextDecoration.underline,
                                   ),
                                   recognizer: TapGestureRecognizer()
