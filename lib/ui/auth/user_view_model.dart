@@ -142,9 +142,8 @@ class UserViewModel extends BaseViewModel {
   void navigateToSignUp() => _navigationService.navigateTo(AppRoutes.signUp);
 
   void onItemTap(int index) {
-    print(index);
     if (index == 0) {
-      // signOut();
+      signOut();
     } else {
       currentIndex = index;
       notifyListeners();

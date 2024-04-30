@@ -1,6 +1,6 @@
 import 'package:flashcards/shared/app_colors.dart';
 import 'package:flashcards/shared/app_icons.dart';
-import 'package:flashcards/ui/account_view.dart';
+import 'package:flashcards/ui/account/account_view.dart';
 import 'package:flashcards/ui/auth/user_view_model.dart';
 import 'package:flashcards/ui/collections/all_collections_view.dart';
 import 'package:flutter/material.dart';
