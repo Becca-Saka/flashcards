@@ -1,5 +1,6 @@
 import 'package:flashcards/ui/auth/sign_in_view.dart';
 import 'package:flashcards/ui/auth/sign_up_view.dart';
+import 'package:flashcards/ui/collections/collections_view.dart';
 import 'package:flashcards/ui/dashboard_view.dart';
 import 'package:flashcards/ui/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ class AppRoutes {
   static const String splash = '/splash';
 
   static const String forgotPassword = '/forgot_password';
+
+  static const String collectionDetail = '/collection_detail';
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -21,6 +24,7 @@ class AppRouter {
     AppRoutes.signIn: (context) => SignInView(),
     AppRoutes.signUp: (context) => SignUpView(),
     AppRoutes.dashboard: (context) => DashboardView(),
+    AppRoutes.collectionDetail: (context) => const CollectionView(),
   };
 }
 

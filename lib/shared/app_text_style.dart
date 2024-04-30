@@ -19,6 +19,10 @@ abstract class AppTextStyle {
   static TextStyle get medium10 =>
       regular10.copyWith(fontWeight: AppFontWeight.medium);
 
+  ///Manrope bold 10
+  static TextStyle get semiBold10 =>
+      regular10.copyWith(fontWeight: AppFontWeight.semiBold);
+
   ///Manrope 12
   static TextStyle get regular12 => _baseTextStyle.copyWith(fontSize: 12);
 
@@ -52,17 +56,21 @@ abstract class AppTextStyle {
   static TextStyle get bold16 =>
       regular16.copyWith(fontWeight: AppFontWeight.bold);
 
-  ///Manrope bold 24
-  static TextStyle get semibold24 => regular16.copyWith(
-        fontWeight: AppFontWeight.semiBold,
-        fontSize: 24,
+  ///Manrope bold 16
+  static TextStyle get extraBold16 => regular16.copyWith(
+        fontWeight: AppFontWeight.extraBold,
       );
 
+  ///Manrope  24
+  static TextStyle get regular24 => _baseTextStyle.copyWith(fontSize: 24);
+
   ///Manrope bold 24
-  static TextStyle get extraBold24 => regular16.copyWith(
-        fontWeight: AppFontWeight.extraBold,
-        fontSize: 24,
-      );
+  static TextStyle get semibold24 =>
+      regular24.copyWith(fontWeight: AppFontWeight.semiBold);
+
+  ///Manrope bold 24
+  static TextStyle get extraBold24 =>
+      regular24.copyWith(fontWeight: AppFontWeight.extraBold);
 }
 
 abstract class AppFontWeight {

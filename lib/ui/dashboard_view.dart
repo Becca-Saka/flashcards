@@ -2,14 +2,14 @@ import 'package:flashcards/shared/app_colors.dart';
 import 'package:flashcards/shared/app_icons.dart';
 import 'package:flashcards/ui/account_view.dart';
 import 'package:flashcards/ui/auth/user_view_model.dart';
-import 'package:flashcards/ui/collections/collections_view.dart';
+import 'package:flashcards/ui/collections/all_collections_view.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 class DashboardView extends StatelessWidget {
   DashboardView({super.key});
   final screens = [
-    const CollectionView(),
+    const AllCollectionView(),
     const AccountView(),
   ];
   @override
