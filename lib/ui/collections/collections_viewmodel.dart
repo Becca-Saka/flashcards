@@ -5,10 +5,11 @@ import 'package:flashcards/app/set_up_dialog_ui.dart';
 import 'package:flashcards/data/services/collection_service.dart';
 import 'package:flashcards/data/services/file_picker_service.dart';
 import 'package:flashcards/model/collection_model.dart';
-import 'package:flashcards/model/quiz_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
+import '../../data/services/gemini_services.dart';
+import '../../data/services/quiz_service.dart';
 import '../../model/collection_file.dart';
 
 class CollectionsViewModel extends BaseViewModel {
@@ -17,28 +18,12 @@ class CollectionsViewModel extends BaseViewModel {
   final FilePickerService _filePickerService = FilePickerService();
   final CarouselController carouselController = CarouselController();
   final _collectionService = locator<ICollectionService>();
+  final _geminiService = locator<IGeminiService>();
+  final _quizService = locator<IQuizService>();
 
   int carouselPage = 0;
   List<CollectionModel> get collections => _collectionService.collections;
 
-  final List<QuizModel> quizzes = [
-    QuizModel(
-      title: 'What is 1 + 1?',
-      answer: '2',
-    ),
-    QuizModel(
-      title: 'Who is the creator of Flutter?',
-      answer: 'Google',
-    ),
-    QuizModel(
-      title: 'What is Flutter?',
-      answer: 'A framework',
-    ),
-    QuizModel(
-      title: 'What is type?',
-      answer: 'A framework',
-    ),
-  ];
   CollectionModel? selectedCollection;
   String? collectionName;
 
@@ -92,6 +77,14 @@ class CollectionsViewModel extends BaseViewModel {
       selectedCollection = collections[index];
     }
     notifyListeners();
+
+    /// Generate questions
+    final uploadedCollection =
+        await _geminiService.uploadCollectionFiles(collections[index]);
+    await _collectionService.updateCollection(uploadedCollection);
+
+    /// generate questions
+    await _geminiService.generateQuiz(uploadedCollection.files);
   }
 
   Future<void> removeFile(CollectionFile file) async {
@@ -106,34 +99,60 @@ class CollectionsViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  void startQuiz([CollectionModel? collection]) {
+  Future<void> startQuiz([CollectionModel? collection]) async {
     selectedCollection = collection ?? selectedCollection;
-    _dialogService.showCustomDialog(
-      variant: DialogType.quizProgress,
-      barrierDismissible: true,
+    if (selectedCollection == null) return;
+    if (selectedCollection!.quizzes.isEmpty) return;
+    if (selectedCollection!.quizzes.any((quiz) => quiz.isAnswered)) {
+      _dialogService.showCustomDialog(
+        variant: DialogType.quizProgress,
+        barrierDismissible: true,
+      );
+    } else {
+      await _navigationService.navigateTo(AppRoutes.quiz);
+      selectedCollection = _collectionService.collections.firstWhere(
+        (element) => element.uid == selectedCollection!.uid,
+      );
+    }
+  }
+
+  Future<void> continueQuiz() async {
+    _navigationService.back();
+    await _navigationService.navigateTo(AppRoutes.quiz);
+    selectedCollection = _collectionService.collections.firstWhere(
+      (element) => element.uid == selectedCollection!.uid,
     );
   }
 
-  void continueQuiz() {
+  Future<void> playQuiz() async {
     _navigationService.back();
-    _navigationService.navigateTo(AppRoutes.quiz);
-  }
-
-  void playQuiz() {
-    _navigationService.back();
-    _navigationService.navigateTo(AppRoutes.quiz);
+    await _quizService.resetQuestions(selectedCollection!.uid);
+    await _navigationService.navigateTo(AppRoutes.quiz);
+    selectedCollection = _collectionService.collections.firstWhere(
+      (element) => element.uid == selectedCollection!.uid,
+    );
   }
 
   void correctAnswer() {
+    _quizService.answerQuestion(
+      selectedCollection!.uid,
+      selectedCollection!.quizzes[carouselPage].id,
+      true,
+    );
     _movePage();
   }
 
   void incorrectAnswer() {
+    _quizService.answerQuestion(
+      selectedCollection!.uid,
+      selectedCollection!.quizzes[carouselPage].id,
+      false,
+    );
     _movePage();
   }
 
   void _movePage() {
-    if (carouselPage == quizzes.length - 1) {
+    if (carouselPage == selectedCollection!.quizzes.length - 1) {
       _navigationService.navigateTo(AppRoutes.quizResult);
     } else {
       carouselController.nextPage();

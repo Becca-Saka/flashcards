@@ -5,6 +5,9 @@ import 'package:flashcards/ui/collections/collections_viewmodel.dart';
 import 'package:get_it/get_it.dart';
 import 'package:stacked_services/stacked_services.dart';
 
+import '../data/services/gemini_services.dart';
+import '../data/services/quiz_service.dart';
+
 GetIt locator = GetIt.instance;
 
 void setupLocator() {
@@ -16,4 +19,6 @@ void setupLocator() {
   locator.registerLazySingleton<DialogService>(() => DialogService());
   locator.registerLazySingleton<ILocalStorage>(() => LocalStorageService());
   locator.registerLazySingleton<ICollectionService>(() => CollectionService());
+  locator.registerLazySingleton<IGeminiService>(() => GeminiService());
+  locator.registerLazySingleton<IQuizService>(() => QuizService());
 }

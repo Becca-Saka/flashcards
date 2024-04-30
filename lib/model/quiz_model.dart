@@ -1,38 +1,71 @@
+import 'dart:convert';
+
+import 'package:uuid/uuid.dart';
+
 class QuizModel {
-  final String title;
+  final String id;
+  final String question;
   final String answer;
-  final String? uid;
+  final bool? answeredCorrectly;
+
   QuizModel({
-    required this.title,
+    required this.id,
+    required this.question,
     required this.answer,
-    this.uid,
+    this.answeredCorrectly,
   });
 
+  QuizModel.initial({
+    required this.question,
+    required this.answer,
+  })  : id = const Uuid().v4(),
+        answeredCorrectly = null;
+
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'title': title,
+    return {
+      'id': id,
+      'question': question,
       'answer': answer,
-      'uid': uid,
+      'answered_correctly': answeredCorrectly,
     };
   }
 
   factory QuizModel.fromMap(Map<String, dynamic> map) {
     return QuizModel(
-      title: map['title'] as String,
-      answer: map['answer'] as String,
-      uid: map['uid'] as String,
+      id: map['id'] ?? '',
+      question: map['question'] ?? '',
+      answer: map['answer'] ?? '',
+      answeredCorrectly: map['answered_correctly'],
     );
   }
 
+  String toJson() => json.encode(toMap());
+
+  factory QuizModel.fromJson(String source) =>
+      QuizModel.fromMap(json.decode(source));
+
+  QuizModel answerQuestion(bool answeredCorrectly) {
+    return QuizModel(
+      id: id,
+      question: question,
+      answer: answer,
+      answeredCorrectly: answeredCorrectly,
+    );
+  }
+
+  bool get isAnswered => answeredCorrectly != null;
+
   QuizModel copyWith({
-    String? title,
+    String? id,
+    String? question,
     String? answer,
-    String? uid,
+    bool? answeredCorrectly,
   }) {
     return QuizModel(
-      title: title ?? this.title,
+      id: id ?? this.id,
+      question: question ?? this.question,
       answer: answer ?? this.answer,
-      uid: uid ?? this.uid,
+      answeredCorrectly: answeredCorrectly ?? this.answeredCorrectly,
     );
   }
 }

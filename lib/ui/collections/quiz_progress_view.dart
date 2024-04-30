@@ -1,3 +1,4 @@
+import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/shared/app_button.dart';
 import 'package:flashcards/shared/app_spacing.dart';
 import 'package:flashcards/shared/app_text_style.dart';
@@ -12,7 +13,8 @@ class QuizProgresView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CollectionsViewModel>.reactive(
-        viewModelBuilder: () => CollectionsViewModel(),
+        viewModelBuilder: () => locator<CollectionsViewModel>(),
+        disposeViewModel: false,
         builder: (context, controller, child) {
           return Dialog(
             child: Container(
@@ -32,13 +34,13 @@ class QuizProgresView extends StatelessWidget {
                     title: 'Yes, continue',
                     isLoading: controller.isBusy,
                     textColor: Colors.white,
-                    onPressed: controller.playQuiz,
+                    onPressed: controller.continueQuiz,
                   ),
                   const AppSpacing(v: 20),
                   AppButton.outlined(
                     title: 'No, start again',
                     isLoading: controller.isBusy,
-                    onPressed: controller.continueQuiz,
+                    onPressed: controller.playQuiz,
                   ),
                   const AppSpacing(v: 16),
                 ],

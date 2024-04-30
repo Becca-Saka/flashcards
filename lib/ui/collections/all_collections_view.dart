@@ -109,7 +109,7 @@ class AllCollectionView extends StatelessWidget {
                                         const PlayIcon(),
                                         const AppSpacing(v: 4),
                                         Text(
-                                          '20 Questions',
+                                          '${collection.quizzes.length} Questions',
                                           style: AppTextStyle.semiBold10,
                                         ),
                                       ],
