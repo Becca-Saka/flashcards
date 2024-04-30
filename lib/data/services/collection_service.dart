@@ -10,13 +10,13 @@ abstract class ICollectionService {
 
   List<CollectionModel> get collections;
 
-  Future<void> addAssetsToCollection(
+  Future<CollectionModel> addAssetsToCollection(
     String collectionId,
     List<CollectionFile> assets,
   );
 
-  Future<void> removeAssetsFromCollection(
-    String collection,
+  Future<CollectionModel> removeAssetsFromCollection(
+    String collectionId,
     CollectionFile asset,
   );
 }
@@ -82,6 +82,19 @@ class CollectionService implements ICollectionService {
     }
   }
 
+  List<CollectionFile> getCollectionAssets(String collectionId) {
+    try {
+      var storedAssets = _localStorage.get<List>(
+        StorageKeys.collectionAssets(collectionId),
+        def: [],
+      );
+      storedAssets ??= [];
+      return storedAssets.map((item) => CollectionFile.fromMap(item)).toList();
+    } on Exception {
+      return [];
+    }
+  }
+
   /// Fetches the collections from the local storage. If there are no collections
   /// stored, an empty list is returned. Adds the new assets to the list of
   /// assets for the collection with the given [collectionId] and stores the
@@ -89,18 +102,23 @@ class CollectionService implements ICollectionService {
   ///
   /// Throws an exception if the assets cannot be added to the collection.
   @override
-  Future<void> addAssetsToCollection(
+  Future<CollectionModel> addAssetsToCollection(
     String collectionId,
     List<CollectionFile> assets,
   ) async {
     try {
-      var storedAssets = _localStorage.get<List<Map<String, dynamic>>>(
-        StorageKeys.collectionAssets(collectionId),
-        def: [],
+      var collections = this.collections;
+      final index = collections.indexWhere((e) => e.uid == collectionId);
+      final files = collections[index].files;
+
+      collections[index] =
+          collections[index].copyWith(files: files..addAll(assets));
+
+      await _localStorage.add(
+        StorageKeys.collections,
+        value: collections.map((e) => e.toMap()).toList(),
       );
-      storedAssets ??= [];
-      storedAssets.addAll(assets.map((asset) => asset.toMap()));
-      await _localStorage.add(StorageKeys.collections, value: storedAssets);
+      return collections[index];
     } on Exception catch (e) {
       throw Exception('Failed to add assets to collection: $e');
     }
@@ -113,20 +131,24 @@ class CollectionService implements ICollectionService {
   ///
   /// Throws an exception if the assets cannot be removed from the collection.
   @override
-  Future<void> removeAssetsFromCollection(
-    String collection,
+  Future<CollectionModel> removeAssetsFromCollection(
+    String collectionId,
     CollectionFile asset,
   ) async {
     try {
-      var storedAssets = _localStorage.get<List<Map<String, dynamic>>>(
-        StorageKeys.collectionAssets(collection),
-        def: [],
+      var collections = this.collections;
+      final index = collections.indexWhere((e) => e.uid == collectionId);
+      final files = collections[index].files;
+
+      collections[index] = collections[index].copyWith(
+        files: files..removeWhere((file) => file.id == asset.id),
       );
-      storedAssets ??= [];
-      storedAssets.removeWhere(
-        (item) => CollectionFile.fromMap(item).id == asset.id,
+
+      await _localStorage.add(
+        StorageKeys.collections,
+        value: collections.map((e) => e.toMap()).toList(),
       );
-      await _localStorage.add(StorageKeys.collections, value: storedAssets);
+      return collections[index];
     } on Exception catch (e) {
       throw Exception('Failed to remove assets from collection: $e');
     }

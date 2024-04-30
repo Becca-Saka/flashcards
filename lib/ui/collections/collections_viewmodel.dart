@@ -66,7 +66,6 @@ class CollectionsViewModel extends BaseViewModel {
       description: description!,
     ));
     notifyListeners();
-    notifyListeners();
   }
 
   void viewCollection(CollectionModel collection) {
@@ -77,31 +76,33 @@ class CollectionsViewModel extends BaseViewModel {
 
   Future<void> addFiles([int? selectedIndex]) async {
     final files = await _filePickerService.pickFile();
-    if (files != null) {
-      int index = selectedIndex ?? collections.indexOf(selectedCollection!);
+    if (files == null) return;
+    if (files.isEmpty) return;
 
-      collections[index] = collections[index].copyWith(
-        files: [
-          ...collections[index].files!,
-          ...files
-              .map((e) => CollectionFile(id: '', name: e.name, path: e.path)),
-        ],
-      );
-      if (selectedIndex == null) {
-        selectedCollection = collections[index];
-      }
-      notifyListeners();
-    }
-  }
+    int index = selectedIndex ?? collections.indexOf(selectedCollection!);
 
-  void removeFile(CollectionFile file) {
-    int index = collections.indexOf(selectedCollection!);
-    selectedCollection = selectedCollection!.copyWith(
-      files: selectedCollection!.files!
-          .where((element) => element.path != file.path)
+    await _collectionService.addAssetsToCollection(
+      collections[index].uid,
+      files
+          .map((e) => CollectionFile.initial(name: e.name, path: e.path))
           .toList(),
     );
-    collections[index] = selectedCollection!;
+
+    if (selectedIndex == null) {
+      selectedCollection = collections[index];
+    }
+    notifyListeners();
+  }
+
+  Future<void> removeFile(CollectionFile file) async {
+    int index = collections.indexOf(selectedCollection!);
+
+    await _collectionService.removeAssetsFromCollection(
+      collections[index].uid,
+      file,
+    );
+
+    selectedCollection = collections[index];
     notifyListeners();
   }
 

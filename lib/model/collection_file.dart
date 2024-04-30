@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:uuid/uuid.dart';
+
 class CollectionFile {
   final String id;
   final String name;
@@ -12,6 +14,12 @@ class CollectionFile {
     required this.path,
     this.updatedAt,
   });
+
+  CollectionFile.initial({
+    required this.name,
+    required this.path,
+  })  : id = const Uuid().v4(),
+        updatedAt = DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {

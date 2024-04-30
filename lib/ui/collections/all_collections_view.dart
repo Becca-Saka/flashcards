@@ -83,7 +83,7 @@ class AllCollectionView extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                if (collection.files!.isEmpty)
+                                if (collection.files.isEmpty)
                                   InkWell(
                                     onTap: () => controller.addFiles(index),
                                     child: Column(

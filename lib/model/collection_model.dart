@@ -1,17 +1,18 @@
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 
 import 'collection_file.dart';
 
-class CollectionModel {
+class CollectionModel extends Equatable {
   final String uid;
   final String name;
   final String description;
-  final List<CollectionFile>? files;
+  final List<CollectionFile> files;
   final DateTime updatedAt;
 
-  CollectionModel({
+  const CollectionModel({
     required this.uid,
     required this.name,
     required this.description,
@@ -31,7 +32,7 @@ class CollectionModel {
       'uid': uid,
       'name': name,
       'description': description,
-      'files': files?.map((x) => x.toMap()).toList(),
+      'files': files.map((x) => x.toMap()).toList(),
       'updated_at': updatedAt.millisecondsSinceEpoch,
     };
   }
@@ -41,10 +42,8 @@ class CollectionModel {
       uid: map['uid'] ?? '',
       name: map['name'] ?? '',
       description: map['description'] ?? '',
-      files: map['files'] != null
-          ? List<CollectionFile>.from(
-              map['files']?.map((x) => CollectionFile.fromMap(x)))
-          : null,
+      files: List<CollectionFile>.from(
+          map['files']?.map((x) => CollectionFile.fromMap(x)) ?? const []),
       updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updated_at']),
     );
   }
@@ -61,7 +60,7 @@ class CollectionModel {
       name: name ?? this.name,
       description: description ?? this.description,
       files: files ?? this.files,
-      updatedAt: updatedAt ?? this.updatedAt,
+      updatedAt: DateTime.now(),
     );
   }
 
@@ -69,4 +68,14 @@ class CollectionModel {
 
   factory CollectionModel.fromJson(String source) =>
       CollectionModel.fromMap(json.decode(source));
+
+  @override
+  List<Object> get props {
+    return [
+      uid,
+      name,
+      description,
+      updatedAt,
+    ];
+  }
 }
