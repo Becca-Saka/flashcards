@@ -13,6 +13,9 @@ abstract class ICollectionService {
 
   List<CollectionModel> get collections;
 
+  CollectionModel? get currentCollection;
+  set currentCollection(CollectionModel? collection);
+
   Future<CollectionModel> addAssetsToCollection(
     String collectionId,
     List<CollectionFile> assets,
@@ -26,6 +29,16 @@ abstract class ICollectionService {
 
 class CollectionService implements ICollectionService {
   final ILocalStorage _localStorage = LocalStorageService();
+
+  CollectionModel? _currentCollection;
+
+  @override
+  CollectionModel? get currentCollection => _currentCollection;
+
+  @override
+  set currentCollection(CollectionModel? collection) {
+    _currentCollection = collection;
+  }
 
   /// Fetches the collections from the local storage. If there are no collections
   /// stored, an empty list is returned. Adds the new collection to the list of

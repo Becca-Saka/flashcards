@@ -23,10 +23,10 @@ class CollectionsViewModel extends BaseViewModel {
 
   int carouselPage = 0;
   List<CollectionModel> get collections => _collectionService.collections;
+  CollectionModel? get selectedCollection =>
+      _collectionService.currentCollection;
 
-  CollectionModel? selectedCollection;
   String? collectionName;
-
   String? description;
 
   void createCollection() {
@@ -54,7 +54,7 @@ class CollectionsViewModel extends BaseViewModel {
   }
 
   void viewCollection(CollectionModel collection) {
-    selectedCollection = collection;
+    _collectionService.currentCollection = collection;
     notifyListeners();
     _navigationService.navigateTo(AppRoutes.collectionDetail);
   }
@@ -74,7 +74,7 @@ class CollectionsViewModel extends BaseViewModel {
     );
 
     if (selectedIndex == null) {
-      selectedCollection = collections[index];
+      _collectionService.currentCollection = collections[index];
     }
     notifyListeners();
 
@@ -84,7 +84,10 @@ class CollectionsViewModel extends BaseViewModel {
     await _collectionService.updateCollection(uploadedCollection);
 
     /// generate questions
-    await _geminiService.generateQuiz(uploadedCollection.files);
+    final questions =
+        await _geminiService.generateQuiz(uploadedCollection.files);
+    await _quizService.storeQuestions(uploadedCollection.uid, questions);
+    notifyListeners();
   }
 
   Future<void> removeFile(CollectionFile file) async {
@@ -95,12 +98,12 @@ class CollectionsViewModel extends BaseViewModel {
       file,
     );
 
-    selectedCollection = collections[index];
+    _collectionService.currentCollection = collections[index];
     notifyListeners();
   }
 
   Future<void> startQuiz([CollectionModel? collection]) async {
-    selectedCollection = collection ?? selectedCollection;
+    _collectionService.currentCollection = collection ?? selectedCollection;
     if (selectedCollection == null) return;
     if (selectedCollection!.quizzes.isEmpty) return;
     if (selectedCollection!.quizzes.any((quiz) => quiz.isAnswered)) {
@@ -110,27 +113,24 @@ class CollectionsViewModel extends BaseViewModel {
       );
     } else {
       await _navigationService.navigateTo(AppRoutes.quiz);
-      selectedCollection = _collectionService.collections.firstWhere(
-        (element) => element.uid == selectedCollection!.uid,
-      );
+      _collectionService.currentCollection = _collectionService.collections
+          .firstWhere((element) => element.uid == selectedCollection!.uid);
     }
   }
 
   Future<void> continueQuiz() async {
     _navigationService.back();
     await _navigationService.navigateTo(AppRoutes.quiz);
-    selectedCollection = _collectionService.collections.firstWhere(
-      (element) => element.uid == selectedCollection!.uid,
-    );
+    _collectionService.currentCollection = _collectionService.collections
+        .firstWhere((element) => element.uid == selectedCollection!.uid);
   }
 
   Future<void> playQuiz() async {
     _navigationService.back();
     await _quizService.resetQuestions(selectedCollection!.uid);
     await _navigationService.navigateTo(AppRoutes.quiz);
-    selectedCollection = _collectionService.collections.firstWhere(
-      (element) => element.uid == selectedCollection!.uid,
-    );
+    _collectionService.currentCollection = _collectionService.collections
+        .firstWhere((element) => element.uid == selectedCollection!.uid);
   }
 
   void correctAnswer() {

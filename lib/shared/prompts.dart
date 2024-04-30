@@ -28,29 +28,29 @@ Your outuput JSON should look Like 
 
 {
 
-"Flashcards": [
+"flashcards": [
 
 {
 
-"Question": " What is Civic?",
+"question": " What is Civic?",
 
-"Answer": " Civic is ..."
+"answer": " Civic is ..."
 
 },
 
 {
 
-"Question": " What is Civic?",
+"question": " What is Civic?",
 
-"Answer": " Civic is ..."
+"answer": " Civic is ..."
 
 },
 
 {
 
-"Question": " What is Civic?",
+"question": " What is Civic?",
 
-"Answer": " Civic is ..."
+"answer": " Civic is ..."
 
 }
 

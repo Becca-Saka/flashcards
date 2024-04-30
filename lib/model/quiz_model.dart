@@ -30,9 +30,9 @@ class QuizModel {
     };
   }
 
-  factory QuizModel.fromMap(Map<String, dynamic> map) {
+  factory QuizModel.fromMap(Map<String, dynamic> map, [bool initial = false]) {
     return QuizModel(
-      id: map['id'] ?? '',
+      id: initial ? const Uuid().v4() : (map['id'] ?? ''),
       question: map['question'] ?? '',
       answer: map['answer'] ?? '',
       answeredCorrectly: map['answered_correctly'],
