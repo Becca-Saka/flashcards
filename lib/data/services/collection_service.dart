@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flashcards/data/services/local_storage_service.dart';
 
 import '../../model/collection_file.dart';
@@ -30,14 +31,15 @@ abstract class ICollectionService {
 class CollectionService implements ICollectionService {
   final ILocalStorage _localStorage = LocalStorageService();
 
-  CollectionModel? _currentCollection;
+  String? _currentCollectionId;
 
   @override
-  CollectionModel? get currentCollection => _currentCollection;
+  CollectionModel? get currentCollection =>
+      collections.firstWhereOrNull((e) => e.uid == _currentCollectionId);
 
   @override
   set currentCollection(CollectionModel? collection) {
-    _currentCollection = collection;
+    _currentCollectionId = collection?.uid;
   }
 
   /// Fetches the collections from the local storage. If there are no collections

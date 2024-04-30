@@ -56,7 +56,7 @@ class QuizResultView extends StatelessWidget {
                       style: AppTextStyle.regular16,
                     ),
                     const Spacer(flex: 2),
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         AppButton(
@@ -68,8 +68,8 @@ class QuizResultView extends StatelessWidget {
                           shape: ButtonShape.circle,
                           backgroundColor: Colors.white,
                           padding: EdgeInsets.zero,
-                          onPressed: controller.incorrectAnswer,
-                          child: const AppIcons(
+                          // onPressed: controller.incorrectAnswer,
+                          child: AppIcons(
                             icon: AppIconData.previous,
                             size: 20,
                             color: AppColors.primaryColor,
@@ -84,8 +84,8 @@ class QuizResultView extends StatelessWidget {
                           shape: ButtonShape.circle,
                           backgroundColor: AppColors.primaryColor,
                           padding: EdgeInsets.zero,
-                          onPressed: controller.incorrectAnswer,
-                          child: const AppIcons(
+                          // onPressed: controller.incorrectAnswer,
+                          child: AppIcons(
                             icon: AppIconData.restart,
                             size: 30,
                             color: Colors.white,
@@ -100,8 +100,8 @@ class QuizResultView extends StatelessWidget {
                           shape: ButtonShape.circle,
                           backgroundColor: Colors.white,
                           padding: EdgeInsets.zero,
-                          onPressed: controller.correctAnswer,
-                          child: const AppIcons(
+                          // onPressed: controller.correctAnswer,
+                          child: AppIcons(
                             icon: AppIconData.next,
                             size: 20,
                             color: Colors.green,

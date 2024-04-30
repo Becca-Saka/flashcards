@@ -14,8 +14,10 @@ class QuizView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final carouselController = CarouselController();
     return ViewModelBuilder<CollectionsViewModel>.reactive(
       viewModelBuilder: () => locator<CollectionsViewModel>(),
+      onViewModelReady: (viewModel) => viewModel.initQuiz(carouselController),
       disposeViewModel: false,
       builder: (context, controller, child) {
         return Scaffold(
@@ -44,12 +46,12 @@ class QuizView extends StatelessWidget {
               children: [
                 const AppSpacing(v: 40),
                 Text(
-                  'Question 1 of ${controller.selectedCollection?.quizzes.length}',
+                  'Question ${controller.carouselPage + 1} of ${controller.selectedCollection?.quizzes.length}',
                   style: AppTextStyle.extraBold16,
                 ),
                 const AppSpacing(v: 28),
                 CarouselSlider.builder(
-                  carouselController: controller.carouselController,
+                  carouselController: carouselController,
                   options: CarouselOptions(
                     height: 380,
                     aspectRatio: 16 / 9,
@@ -154,7 +156,8 @@ class QuizView extends StatelessWidget {
                       shape: ButtonShape.circle,
                       backgroundColor: Colors.white,
                       padding: EdgeInsets.zero,
-                      onPressed: controller.incorrectAnswer,
+                      onPressed: () =>
+                          controller.answerQuiz(carouselController, false),
                       child: const AppIcons(
                         icon: AppIconData.cancel,
                         size: 20,
@@ -170,7 +173,8 @@ class QuizView extends StatelessWidget {
                       shape: ButtonShape.circle,
                       backgroundColor: Colors.white,
                       padding: EdgeInsets.zero,
-                      onPressed: controller.correctAnswer,
+                      onPressed: () =>
+                          controller.answerQuiz(carouselController, true),
                       child: const AppIcons(
                         icon: AppIconData.check,
                         size: 20,

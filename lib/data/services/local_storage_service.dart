@@ -56,8 +56,9 @@ class LocalStorageService implements ILocalStorage {
   @override
   T? get<T>(String key, {T? def}) {
     try {
-      final res = jsonDecode(_box.get(key)) as T?;
-      return res ?? def;
+      final data = _box.get(key);
+      if (data == null) return def;
+      return jsonDecode(data);
     } catch (e) {
       _log.e(e);
       return null;

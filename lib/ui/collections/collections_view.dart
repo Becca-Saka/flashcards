@@ -1,5 +1,4 @@
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/shared/shared.dart';
 import 'package:flashcards/ui/collections/widgets/play_icon.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +12,8 @@ class CollectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CollectionsViewModel>.reactive(
-      viewModelBuilder: () => locator<CollectionsViewModel>(),
-      disposeViewModel: false,
+      viewModelBuilder: () => CollectionsViewModel(),
+      disposeViewModel: true,
       builder: (context, controller, child) {
         return Scaffold(
           appBar: CustomAppBar(
