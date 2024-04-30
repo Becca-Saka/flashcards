@@ -33,11 +33,12 @@ class CollectionsViewModel extends BaseViewModel {
   String? collectionName;
   String? description;
 
-  void createCollection() {
-    _dialogService.showCustomDialog(
+  Future<void> createCollection() async {
+    await _dialogService.showCustomDialog(
       variant: DialogType.create,
       barrierDismissible: true,
     );
+    notifyListeners();
   }
 
   void updateCollectionName(String value) => collectionName = value;
@@ -56,10 +57,8 @@ class CollectionsViewModel extends BaseViewModel {
   Future<void> viewCollection(CollectionModel collection) async {
     _collectionService.currentCollection = collection;
     await _navigationService.navigateTo(AppRoutes.collectionDetail);
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _collectionService.currentCollection = null;
-      notifyListeners();
-    });
+    _collectionService.currentCollection = null;
+    notifyListeners();
   }
 
   Future<void> addFiles([int? selectedIndex]) async {
@@ -138,10 +137,8 @@ class CollectionsViewModel extends BaseViewModel {
     }
     _collectionService.currentCollection = collection;
     await _navigationService.navigateTo(AppRoutes.quiz);
-    // Future.delayed(const Duration(milliseconds: 500), () {
     _collectionService.currentCollection = null;
     notifyListeners();
-    // });
   }
 
   void answerQuiz(CarouselController carouselController, bool isCorrect) {
