@@ -8,4 +8,5 @@ void setupLocator() {
   locator.registerLazySingleton<UserViewModel>(() => UserViewModel());
   locator.registerLazySingleton<NavigationService>(() => NavigationService());
   locator.registerLazySingleton<SnackbarService>(() => SnackbarService());
+  locator.registerLazySingleton<DialogService>(() => DialogService());
 }

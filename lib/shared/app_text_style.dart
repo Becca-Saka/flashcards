@@ -1,3 +1,4 @@
+import 'package:flashcards/shared/app_colors.dart';
 import 'package:flutter/material.dart';
 
 abstract class AppTextStyle {
@@ -5,10 +6,11 @@ abstract class AppTextStyle {
 
   /// Base text style
   static const TextStyle _baseTextStyle = TextStyle(
-      fontFamily: fontFamily,
-      fontWeight: AppFontWeight.regular,
-      letterSpacing: -0.3,
-      color: Colors.black);
+    fontFamily: fontFamily,
+    fontWeight: AppFontWeight.regular,
+    letterSpacing: -0.3,
+    color: AppColors.black100,
+  );
 
   ///Manrope 10
   static TextStyle get regular10 => _baseTextStyle.copyWith(fontSize: 10);

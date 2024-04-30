@@ -116,9 +116,11 @@ class _AppInputState extends State<AppInput> {
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   child: AppIcons(
-                    icon:
-                        obscureText ? AppIconData.eyesClosed : AppIconData.eyes,
+                    icon: obscureText
+                        ? AppIconData.eyesClosed
+                        : AppIconData.eyeOutlined,
                     size: 16,
+                    color: AppColors.black100,
                     onTap: _updateVisibility,
                   ),
                 )

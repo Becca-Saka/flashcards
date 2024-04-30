@@ -20,7 +20,7 @@ class AppRouter {
     AppRoutes.splash: (context) => const SplashView(),
     AppRoutes.signIn: (context) => SignInView(),
     AppRoutes.signUp: (context) => SignUpView(),
-    AppRoutes.dashboard: (context) => const DashboardView(),
+    AppRoutes.dashboard: (context) => DashboardView(),
   };
 }
 
