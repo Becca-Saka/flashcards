@@ -25,6 +25,7 @@ class AppButton extends StatelessWidget {
   final TextStyle? textStyle;
   final Widget? prefix;
   final ButtonShape shape;
+  final double? elevation;
   const AppButton({
     super.key,
     this.onPressed,
@@ -41,6 +42,7 @@ class AppButton extends StatelessWidget {
     this.textColor,
     this.textStyle,
     this.prefix,
+    this.elevation,
   });
 
   factory AppButton.outlined({
@@ -84,8 +86,10 @@ class AppButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           padding: padding,
-          elevation: 0,
+          elevation: elevation ?? 0,
           backgroundColor: backgroundColor,
+          surfaceTintColor: backgroundColor,
+          shadowColor: Colors.white,
           shape: shape == ButtonShape.circle
               ? CircleBorder(
                   side: BorderSide(color: outlinedColor ?? Colors.transparent),

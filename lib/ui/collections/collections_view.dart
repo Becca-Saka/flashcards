@@ -57,7 +57,7 @@ class CollectionView extends StatelessWidget {
                               heroTag: null,
                               shape: const CircleBorder(),
                               backgroundColor: AppColors.black100,
-                              onPressed: controller.playQuiz,
+                              onPressed: controller.startQuiz,
                               child: const PlayIcon(),
                             ),
                           ],

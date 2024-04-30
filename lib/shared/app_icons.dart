@@ -43,4 +43,10 @@ abstract class AppIconData {
   static const String upload = '$_svgBase/upload.svg';
   static const String save = '$_svgBase/save.svg';
   static const String delete = '$_svgBase/delete.svg';
+  static const String check = '$_svgBase/check.svg';
+  static const String cancel = '$_svgBase/cancel.svg';
+  static const String previous = '$_svgBase/previous.svg';
+  static const String next = '$_svgBase/next.svg';
+  static const String restart = '$_svgBase/restart.svg';
+  static const String add = '$_svgBase/add.svg';
 }

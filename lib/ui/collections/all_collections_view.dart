@@ -23,7 +23,11 @@ class AllCollectionView extends StatelessWidget {
               shape: const CircleBorder(),
               backgroundColor: AppColors.primaryColor,
               onPressed: controller.createCollection,
-              child: const Icon(Icons.add, color: Colors.white),
+              child: const AppIcons(
+                icon: AppIconData.add,
+                size: 20,
+                color: Colors.white,
+              ),
             ),
             body: controller.collections.isEmpty
                 ? Center(
@@ -98,7 +102,8 @@ class AllCollectionView extends StatelessWidget {
                                     )
                                   else
                                     InkWell(
-                                      onTap: controller.playQuiz,
+                                      onTap: () =>
+                                          controller.startQuiz(collection),
                                       child: Column(
                                         children: [
                                           const PlayIcon(),
