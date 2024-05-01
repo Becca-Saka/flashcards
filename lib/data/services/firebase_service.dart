@@ -5,19 +5,31 @@ import 'package:flashcards/model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class FirebaseService {
+abstract class IFirebaseService {
+  Future<UserModel> getCurrentUserData();
+  Future<UserModel?> signIn(String email, String password);
+  Future<bool> createAccount(
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+  );
+  Future<UserModel?> logInWithGoogleUser();
+  Future<void> signOut();
+}
+
+class FirebaseService extends IFirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final CollectionReference _firestore =
+      FirebaseFirestore.instance.collection('users');
 
   final _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   User? get currentUser => _auth.currentUser;
-  Future<bool> saveUserDetails(UserModel userModel) async {
+
+  Future<bool> _saveUserDetails(UserModel userModel) async {
     try {
-      await _firestore
-          .collection('users')
-          .doc(userModel.uid)
-          .set(userModel.toMap());
+      await _firestore.doc(userModel.uid).set(userModel.toMap());
 
       return true;
     } on FirebaseAuthException catch (e) {
@@ -29,14 +41,12 @@ class FirebaseService {
     }
   }
 
+  @override
   Future<UserModel> getCurrentUserData() async {
     try {
-      final response = await _firestore
-          .collection('users')
-          .doc(_auth.currentUser!.uid)
-          .get();
+      final response = await _firestore.doc(_auth.currentUser!.uid).get();
       if (response.data() != null) {
-        return UserModel.fromMap(response.data()!);
+        return UserModel.fromMap(response.data()! as Map<String, dynamic>);
       }
       throw AuthException('User not found');
     } on FirebaseAuthException catch (e) {
@@ -48,6 +58,7 @@ class FirebaseService {
     }
   }
 
+  @override
   Future<UserModel?> logInWithGoogleUser() async {
     try {
       await signOut();
@@ -69,7 +80,7 @@ class FirebaseService {
           email: userCredienditial.user!.email,
           imageUrl: userCredienditial.user!.photoURL,
         );
-        await saveUserDetails(user);
+        await _saveUserDetails(user);
         return user;
       }
       throw AuthException('Error signing in with Google');
@@ -83,6 +94,7 @@ class FirebaseService {
     }
   }
 
+  @override
   Future<bool> createAccount(
     String email,
     String password,
@@ -98,7 +110,7 @@ class FirebaseService {
         lastName: lastName,
         email: email,
       );
-      await saveUserDetails(user);
+      await _saveUserDetails(user);
       await signOut();
       return true;
     } on FirebaseAuthException catch (e) {
@@ -111,6 +123,7 @@ class FirebaseService {
     }
   }
 
+  @override
   Future<UserModel?> signIn(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -125,6 +138,7 @@ class FirebaseService {
     }
   }
 
+  @override
   Future<void> signOut() async {
     await _auth.signOut();
   }

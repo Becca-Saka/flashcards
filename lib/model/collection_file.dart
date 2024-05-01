@@ -71,7 +71,7 @@ class CollectionFile {
   String get mimeType {
     return type == FileType.pdf
         ? 'application/pdf'
-        : 'image/${name.split('.').last}';
+        : 'image/${name.split('/').last.split('.').last.toLowerCase()}';
   }
 }
 
