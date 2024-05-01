@@ -135,6 +135,10 @@ class CollectionsViewModel extends BaseViewModel {
     if (shouldReset) {
       await _quizService.resetQuestions(collection.uid);
     }
+    if (_collectionService.currentCollection != null) {
+      await _navigationService.navigateTo(AppRoutes.quiz);
+      return;
+    }
     _collectionService.currentCollection = collection;
     await _navigationService.navigateTo(AppRoutes.quiz);
     _collectionService.currentCollection = null;
