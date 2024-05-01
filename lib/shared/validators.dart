@@ -1,5 +1,6 @@
 class AppValidators {
   static String? validateField(String? name) {
+    name = name?.trim();
     if (name == null || name.isEmpty) {
       return 'Field cannot be empty';
     }
@@ -8,6 +9,7 @@ class AppValidators {
   }
 
   static String? validateName(String? name) {
+    name = name?.trim();
     if (name == null || name.isEmpty) {
       return 'Please enter name';
     }

@@ -68,9 +68,11 @@ class CollectionFile {
       CollectionFile.fromMap(json.decode(source));
 
   FileType get type => FileType.fromPath(path);
-  String get mimeType => type == FileType.pdf
-      ? 'application/pdf'
-      : 'image/${name.split('.').last}';
+  String get mimeType {
+    return type == FileType.pdf
+        ? 'application/pdf'
+        : 'image/${name.split('.').last}';
+  }
 }
 
 enum FileType {
@@ -82,8 +84,9 @@ enum FileType {
   const FileType(this.value, this.mimeType);
 
   factory FileType.fromPath(String path) {
-    if (path.split('/').last == 'pdf') {
-      return FileType.image;
+    print(path.split('/').last.split('.').last);
+    if (path.split('/').last.split('.').last == 'pdf') {
+      return FileType.pdf;
     }
     return FileType.image;
   }

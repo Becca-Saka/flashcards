@@ -50,7 +50,7 @@ class CreateCollectionView extends StatelessWidget {
                     ),
                     const AppSpacing(v: 33),
                     AppButton(
-                      title: 'Sign In',
+                      title: 'Create Collection',
                       isLoading: controller.isBusy,
                       textColor: Colors.white,
                       onPressed: () {

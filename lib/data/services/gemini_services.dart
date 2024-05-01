@@ -4,13 +4,14 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flashcards/model/collection_file.dart';
+import 'package:flashcards/shared/prompts.dart';
+import 'package:flutter/material.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:logger/logger.dart';
 
 import '../../firebase_options.dart';
 import '../../model/collection_model.dart';
 import '../../model/quiz_model.dart';
-import '../../shared/prompts.dart';
 
 abstract class IGeminiService {
   Future<CollectionModel> uploadCollectionFiles(CollectionModel model);
@@ -18,7 +19,6 @@ abstract class IGeminiService {
 }
 
 class GeminiService extends IGeminiService {
-  final _storage = FirebaseStorage.instance;
   final _dio = Dio();
   final _log = Logger();
 
@@ -53,20 +53,57 @@ class GeminiService extends IGeminiService {
   @override
   Future<CollectionModel> uploadCollectionFiles(CollectionModel model) async {
     try {
+      _log.d('generateQuiz');
+
+      final client = await obtainAuthenticatedClient();
+
       final files = <CollectionFile>[];
-      final collectionRef = _storage.ref().child("collections/${model.name}");
+      _dio.interceptors.add(LogInterceptor(requestHeader: false));
+      const storageBucket = 'jarvis_security_bucket';
+
+      final fileFolderAndName = 'flashcards/collections/${model.name}';
+
+      const api = 'https://www.googleapis.com/upload/storage/v1/b';
 
       for (final file in model.files) {
-        final ref = collectionRef.child("files/${file.name}");
-        await ref.putFile(File(file.path));
-        final url = await ref.getDownloadURL();
-        files.add(file.copyWith(url: url));
+        String location = '$fileFolderAndName/${file.name}';
+        location = location.replaceAll(' ', '%20');
+        final url = '$api/$storageBucket/o?uploadType=media&name=$location';
+
+        final fileContent = await File(file.path).readAsBytes();
+        final res = await _dio.post(
+          url,
+          options: Options(
+            headers: {
+              "Authorization": "Bearer ${client.credentials.accessToken.data}",
+              "Content-Type": model.files.first.mimeType,
+            },
+          ),
+          data: fileContent,
+        );
+
+        client.close();
+
+        _log.d(res.data.toString());
+        final result = res.data as Map<String, dynamic>;
+        final idSplit = (result['id'] as String).split('/');
+
+        final filelink =
+            "gs://${idSplit.sublist(0, idSplit.length - 1).join('/')}";
+
+        files.add(file.copyWith(url: filelink));
       }
 
       return model.copyWith(files: files);
     } on FirebaseException catch (e) {
       _log.e(e);
       throw Exception(e.message);
+    } on DioException catch (e) {
+      _log.e(e.response?.data);
+      throw Exception(e.message);
+    } on Exception catch (e) {
+      _log.e(e);
+      rethrow;
     }
   }
 
@@ -92,12 +129,12 @@ class GeminiService extends IGeminiService {
             "role": "USER",
             "parts": [
               {"text": Prompts.first},
-              // {
-              //   "fileData": {
-              //     "mimeType": files.first.mimeType,
-              //     "fileUri": files.first.url,
-              //   },
-              // },
+              {
+                "fileData": {
+                  "mimeType": files.first.mimeType,
+                  "fileUri": files.first.url,
+                },
+              },
             ]
           },
           "safety_settings": [
@@ -111,27 +148,39 @@ class GeminiService extends IGeminiService {
             }
           ],
           "generation_config": {
-            "temperature": 0.4,
-            "topP": 1,
-            "topK": 32,
+            "temperature": 0.1,
+            "topP": 0.5,
+            "topK": 16,
             "maxOutputTokens": 2048,
           }
         },
       );
 
-      final data = res.data['candidates'][0]['content']['parts'][0]['text'];
-      _log.d(data);
+      final datax = res.data['candidates'][0]['content']['parts'][0]['text'];
+      _log.d(datax);
+      String data = datax as String;
+      final firstJsonBracket = data.indexOf('{');
+      int lastJsonBracket = data.lastIndexOf('}');
 
-      client.close();
-      final parsedData = (jsonDecode(data ?? '') as Map<String, dynamic>);
-      return (parsedData["flashcards"] as List)
-          .map((e) => QuizModel.fromMap(e, true))
-          .toList();
+      debugPrint('${data.length} $firstJsonBracket $lastJsonBracket');
+      if (lastJsonBracket == -1) lastJsonBracket = data.length;
+      if (firstJsonBracket != -1 && lastJsonBracket != -1) {
+        data = data.substring(firstJsonBracket, lastJsonBracket + 1);
+        var cleanedData = jsonDecode(data.replaceAll('\\n', ' '));
+
+        client.close();
+
+        return (cleanedData["flashcards"] as List)
+            .map((e) => QuizModel.fromMap(e, true))
+            .toList();
+      } else {
+        return [];
+      }
     } on DioException catch (e) {
       _log.e(e.response?.data);
       throw Exception(e.message);
-    } on Exception catch (e) {
-      _log.e(e);
+    } on Exception catch (e, s) {
+      _log.e(e, stackTrace: s);
       rethrow;
     }
   }

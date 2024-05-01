@@ -33,7 +33,8 @@ class CollectionView extends StatelessWidget {
               ),
             ),
           ),
-          floatingActionButton: controller.selectedCollection!.files.isEmpty
+          floatingActionButton: controller.selectedCollection == null ||
+                  controller.selectedCollection!.files.isEmpty
               ? null
               : Column(
                   mainAxisSize: MainAxisSize.min,
@@ -49,19 +50,22 @@ class CollectionView extends StatelessWidget {
                       ),
                     ),
                     const AppSpacing(v: 30),
-                    FloatingActionButton(
-                      elevation: 0,
-                      heroTag: null,
-                      shape: const CircleBorder(),
-                      backgroundColor: AppColors.black100,
-                      onPressed: controller.startQuiz,
-                      child: const PlayIcon(),
-                    ),
+                    if (controller.selectedCollection != null &&
+                        controller.selectedCollection!.quizzes.isNotEmpty)
+                      FloatingActionButton(
+                        elevation: 0,
+                        heroTag: null,
+                        shape: const CircleBorder(),
+                        backgroundColor: AppColors.black100,
+                        onPressed: controller.startQuiz,
+                        child: const PlayIcon(),
+                      ),
                   ],
                 ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            child: controller.selectedCollection!.files.isEmpty
+            child: controller.selectedCollection == null ||
+                    controller.selectedCollection!.files.isEmpty
                 ? Center(
                     child: InkWell(
                       onTap: controller.addFiles,
