@@ -37,6 +37,7 @@ class GeminiService extends IGeminiService {
         "https://www.googleapis.com/robot/v1/metadata/x509/jarvis-security-419415%40appspot.gserviceaccount.com",
     "universe_domain": "googleapis.com"
   };
+  int retryCount = 0;
 
   Future<AuthClient> obtainAuthenticatedClient() async {
     final accountCredentials = ServiceAccountCredentials.fromJson(res);
@@ -114,19 +115,7 @@ class GeminiService extends IGeminiService {
       final projectId = DefaultFirebaseOptions.currentPlatform.projectId;
       final client = await obtainAuthenticatedClient();
       _dio.interceptors.add(LogInterceptor(requestHeader: false));
-      final promptData = {
-        "role": "USER",
-        "parts": [
-          {"text": Prompts.first},
-          {
-            "fileData": {
-              "mimeType": file.mimeType,
-              "fileUri": file.url,
-            },
-          },
-        ]
-      };
-      _log.d('Prompt data: $promptData');
+
       final res = await _dio.post(
         "https://$vertexAiLocationId-aiplatform.googleapis.com/v1/projects/$projectId/locations/$vertexAiLocationId/publishers/google/models/gemini-1.0-pro-vision:generateContent",
         options: Options(
@@ -136,19 +125,18 @@ class GeminiService extends IGeminiService {
           },
         ),
         data: {
-          "contents": promptData,
-          // "contents": {
-          //   "role": "USER",
-          //   "parts": [
-          //     {"text": Prompts.first},
-          //     {
-          //       "fileData": {
-          //         "mimeType": files.first.mimeType,
-          //         "fileUri": files.first.url,
-          //       },
-          //     },
-          //   ]
-          // },
+          "contents": {
+            "role": "USER",
+            "parts": [
+              {"text": Prompts.first},
+              {
+                "fileData": {
+                  "mimeType": file.mimeType,
+                  "fileUri": file.url,
+                },
+              },
+            ]
+          },
           "safety_settings": [
             {
               "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
@@ -179,11 +167,15 @@ class GeminiService extends IGeminiService {
         var cleanedData = jsonDecode(data.replaceAll('\\n', ' '));
 
         client.close();
-
+        retryCount = 0;
         return (cleanedData["flashcards"] as List)
             .map((e) => QuizModel.fromGemini(e, file.id))
             .toList();
       } else {
+        retryCount++;
+        if (retryCount < 5) {
+          return await generateQuiz(file);
+        }
         _log.e('Failed to parse data');
         throw Exception('Something went wrong');
       }
