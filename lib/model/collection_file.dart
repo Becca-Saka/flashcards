@@ -84,7 +84,6 @@ enum FileType {
   const FileType(this.value, this.mimeType);
 
   factory FileType.fromPath(String path) {
-    print(path.split('/').last.split('.').last);
     if (path.split('/').last.split('.').last == 'pdf') {
       return FileType.pdf;
     }

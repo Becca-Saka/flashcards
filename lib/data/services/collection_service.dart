@@ -3,7 +3,6 @@ import 'package:flashcards/data/services/local_storage_service.dart';
 
 import '../../model/collection_file.dart';
 import '../../model/collection_model.dart';
-import '../../model/quiz_model.dart';
 
 abstract class ICollectionService {
   Future<void> createCollection(CollectionModel collection);
@@ -51,10 +50,7 @@ class CollectionService implements ICollectionService {
   Future<void> createCollection(CollectionModel collection) async {
     try {
       var collections = this.collections;
-
-      collections.add(collection.copyWith(
-        quizzes: quizzes,
-      ));
+      collections.add(collection);
       await _localStorage.add(
         StorageKeys.collections,
         value: collections.map((e) => e.toMap()).toList(),
@@ -63,8 +59,6 @@ class CollectionService implements ICollectionService {
       throw Exception('Failed to create collection: $e');
     }
   }
-
-  final List<QuizModel> quizzes = [];
 
   @override
   Future<void> updateCollection(CollectionModel collection) async {

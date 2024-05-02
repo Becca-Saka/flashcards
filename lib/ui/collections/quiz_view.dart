@@ -79,25 +79,33 @@ class QuizView extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Spacer(),
-                            Text(
-                              'Question ${index + 1}',
-                              style: AppTextStyle.medium14.copyWith(
-                                color: Colors.white,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Spacer(),
+                                  Text(
+                                    'Question ${index + 1}',
+                                    style: AppTextStyle.medium14.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const AppSpacing(v: 20),
+                                  Text(
+                                    file.question,
+                                    style: AppTextStyle.extraBold24.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 25,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                ],
                               ),
                             ),
-                            const AppSpacing(v: 20),
-                            Text(
-                              file.question,
-                              style: AppTextStyle.extraBold24.copyWith(
-                                color: Colors.white,
-                                fontSize: 25,
-                              ),
-                            ),
-                            const Spacer(),
                             Theme(
-                              data: Theme.of(context)
-                                  .copyWith(dividerColor: Colors.transparent),
+                              data: Theme.of(context).copyWith(
+                                dividerColor: Colors.transparent,
+                              ),
                               child: CustomExpansionTile(
                                 childrenPadding: EdgeInsets.zero,
                                 tilePadding: EdgeInsets.zero,
@@ -118,11 +126,17 @@ class QuizView extends StatelessWidget {
                                   ),
                                 ),
                                 children: [
-                                  Text(
-                                    file.answer,
-                                    style: AppTextStyle.bold16.copyWith(
-                                      color: Colors.white,
-                                      fontSize: 14,
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.2,
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        file.answer * 50,
+                                        style: AppTextStyle.bold16.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],

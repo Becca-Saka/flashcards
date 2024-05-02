@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flashcards/app/app_routes.dart';
 import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/app/set_up_dialog_ui.dart';
+import 'package:flashcards/data/extensions/base_viewmodel_ext.dart';
 import 'package:flashcards/data/services/collection_service.dart';
 import 'package:flashcards/data/services/file_picker_service.dart';
 import 'package:flashcards/model/collection_model.dart';
@@ -63,10 +64,9 @@ class CollectionsViewModel extends BaseViewModel {
   }
 
   Future<void> addFiles([int? selectedIndex]) async {
+    int index = selectedIndex ?? collections.indexOf(selectedCollection!);
+    if (index == -1) return;
     try {
-      int index = selectedIndex ?? collections.indexOf(selectedCollection!);
-      if (index == -1) return;
-
       final files = await _filePickerService.pickFile();
       if (files == null) return;
       if (files.isEmpty) return;
@@ -78,6 +78,8 @@ class CollectionsViewModel extends BaseViewModel {
         collectionFiles,
       );
       notifyListeners();
+
+      setBusyForFileUpload(collections[index].uid, true);
 
       /// Generate questions
       final uploadedCollection = await _geminiService.uploadCollectionFiles(
@@ -104,6 +106,9 @@ class CollectionsViewModel extends BaseViewModel {
         message: "Something went wrong",
         duration: const Duration(seconds: 3),
       );
+    } finally {
+      setBusyForFileUpload(collections[index].uid, false);
+      notifyListeners();
     }
   }
 
@@ -143,6 +148,10 @@ class CollectionsViewModel extends BaseViewModel {
   }) async {
     if (shouldReset) {
       await _quizService.resetQuestions(collection.uid);
+    }
+    if (_collectionService.currentCollection != null) {
+      await _navigationService.navigateTo(AppRoutes.quiz);
+      return;
     }
     _collectionService.currentCollection = collection;
     await _navigationService.navigateTo(AppRoutes.quiz);
