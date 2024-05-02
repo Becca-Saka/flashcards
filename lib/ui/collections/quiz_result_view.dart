@@ -45,13 +45,15 @@ class QuizResultView extends StatelessWidget {
                 children: [
                   const Spacer(),
                   Text(
-                    '👍',
+                    controller.selectedCollection!.score > 0.5 ? '👍' : '👎',
                     style: AppTextStyle.bold16.copyWith(
                       fontSize: 36,
                     ),
                   ),
                   Text(
-                    'Good Job',
+                    controller.selectedCollection!.score > 0.5
+                        ? 'Good Job'
+                        : 'Work Harder',
                     style: AppTextStyle.bold16.copyWith(
                       fontSize: 36,
                     ),
