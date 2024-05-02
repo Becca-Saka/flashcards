@@ -108,7 +108,7 @@ class GeminiService extends IGeminiService {
   }
 
   @override
-  Future<List<QuizModel>> generateQuiz(CollectionFile files) async {
+  Future<List<QuizModel>> generateQuiz(CollectionFile file) async {
     try {
       _log.d('generateQuiz');
       const vertexAiLocationId = "us-central1";
@@ -131,8 +131,8 @@ class GeminiService extends IGeminiService {
               {"text": Prompts.first},
               {
                 "fileData": {
-                  "mimeType": files.mimeType,
-                  "fileUri": files.url,
+                  "mimeType": file.mimeType,
+                  "fileUri": file.url,
                 },
               },
             ]
@@ -169,12 +169,12 @@ class GeminiService extends IGeminiService {
         client.close();
         retryCount = 0;
         return (cleanedData["flashcards"] as List)
-            .map((e) => QuizModel.fromMap(e, true))
+            .map((e) => QuizModel.fromGemini(e, file.id))
             .toList();
       } else {
         retryCount++;
         if (retryCount < 5) {
-          return await generateQuiz(files);
+          return await generateQuiz(file);
         }
         _log.e('Failed to parse data');
         throw Exception('Something went wrong');
