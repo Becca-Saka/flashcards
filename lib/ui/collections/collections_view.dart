@@ -1,4 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flashcards/data/extensions/base_viewmodel_ext.dart';
 import 'package:flashcards/shared/shared.dart';
 import 'package:flashcards/ui/collections/widgets/play_icon.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class CollectionView extends StatelessWidget {
     return ViewModelBuilder<CollectionsViewModel>.reactive(
       viewModelBuilder: () => CollectionsViewModel(),
       builder: (context, controller, child) {
+        final collection = controller.selectedCollection;
         return Scaffold(
           appBar: CustomAppBar(
             title: '${controller.selectedCollection?.name}',
@@ -33,8 +35,7 @@ class CollectionView extends StatelessWidget {
               ),
             ),
           ),
-          floatingActionButton: controller.selectedCollection == null ||
-                  controller.selectedCollection!.files.isEmpty
+          floatingActionButton: collection == null || collection.files.isEmpty
               ? null
               : Column(
                   mainAxisSize: MainAxisSize.min,
@@ -50,22 +51,22 @@ class CollectionView extends StatelessWidget {
                       ),
                     ),
                     const AppSpacing(v: 30),
-                    if (controller.selectedCollection != null &&
-                        controller.selectedCollection!.quizzes.isNotEmpty)
-                      FloatingActionButton(
-                        elevation: 0,
-                        heroTag: null,
-                        shape: const CircleBorder(),
-                        backgroundColor: AppColors.black100,
-                        onPressed: controller.startQuiz,
-                        child: const PlayIcon(),
+                    // if (collection.quizzes.isNotEmpty)
+                    FloatingActionButton(
+                      elevation: 0,
+                      heroTag: null,
+                      shape: const CircleBorder(),
+                      backgroundColor: AppColors.black100,
+                      onPressed: controller.startQuiz,
+                      child: PlayIcon(
+                        isLoading: controller.busyForFileUpload(collection.uid),
                       ),
+                    ),
                   ],
                 ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            child: controller.selectedCollection == null ||
-                    controller.selectedCollection!.files.isEmpty
+            child: collection == null || collection.files.isEmpty
                 ? Center(
                     child: InkWell(
                       onTap: controller.addFiles,
@@ -117,11 +118,10 @@ class CollectionView extends StatelessWidget {
                       ),
                       const AppSpacing(v: 20),
                       ListView.builder(
-                        itemCount: controller.selectedCollection!.files.length,
+                        itemCount: collection.files.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                          final file =
-                              controller.selectedCollection!.files[index];
+                          final file = collection.files[index];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: Container(

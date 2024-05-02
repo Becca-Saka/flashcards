@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flashcards/app/app_routes.dart';
 import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/app/set_up_dialog_ui.dart';
+import 'package:flashcards/data/extensions/base_viewmodel_ext.dart';
 import 'package:flashcards/data/services/collection_service.dart';
 import 'package:flashcards/data/services/file_picker_service.dart';
 import 'package:flashcards/model/collection_model.dart';
@@ -62,10 +63,9 @@ class CollectionsViewModel extends BaseViewModel {
   }
 
   Future<void> addFiles([int? selectedIndex]) async {
+    int index = selectedIndex ?? collections.indexOf(selectedCollection!);
+    if (index == -1) return;
     try {
-      int index = selectedIndex ?? collections.indexOf(selectedCollection!);
-      if (index == -1) return;
-
       final files = await _filePickerService.pickFile();
       if (files == null) return;
       if (files.isEmpty) return;
@@ -78,6 +78,8 @@ class CollectionsViewModel extends BaseViewModel {
       );
       notifyListeners();
 
+      setBusyForFileUpload(collections[index].uid, true);
+
       /// Generate questions
       final uploadedCollection =
           await _geminiService.uploadCollectionFiles(collections[index]);
@@ -87,7 +89,6 @@ class CollectionsViewModel extends BaseViewModel {
       final questions =
           await _geminiService.generateQuiz(uploadedCollection.files);
       await _quizService.storeQuestions(uploadedCollection.uid, questions);
-      notifyListeners();
     } on Exception catch (e) {
       _log.e(e);
       _snackbarService.showCustomSnackBar(
@@ -95,6 +96,9 @@ class CollectionsViewModel extends BaseViewModel {
         message: "Something went wrong",
         duration: const Duration(seconds: 3),
       );
+    } finally {
+      setBusyForFileUpload(collections[index].uid, false);
+      notifyListeners();
     }
   }
 

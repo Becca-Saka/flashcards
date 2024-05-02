@@ -3,7 +3,6 @@ import 'package:flashcards/data/services/local_storage_service.dart';
 
 import '../../model/collection_file.dart';
 import '../../model/collection_model.dart';
-import '../../model/quiz_model.dart';
 
 abstract class ICollectionService {
   Future<void> createCollection(CollectionModel collection);
@@ -51,10 +50,7 @@ class CollectionService implements ICollectionService {
   Future<void> createCollection(CollectionModel collection) async {
     try {
       var collections = this.collections;
-
-      collections.add(collection.copyWith(
-        quizzes: quizzes,
-      ));
+      collections.add(collection);
       await _localStorage.add(
         StorageKeys.collections,
         value: collections.map((e) => e.toMap()).toList(),
@@ -64,24 +60,24 @@ class CollectionService implements ICollectionService {
     }
   }
 
-  final List<QuizModel> quizzes = [
-    QuizModel.initial(
-      question: 'What is 1 + 1?',
-      answer: '2',
-    ),
-    QuizModel.initial(
-      question: 'Who is the creator of Flutter?',
-      answer: 'Google',
-    ),
-    QuizModel.initial(
-      question: 'What is Flutter?',
-      answer: 'A framework',
-    ),
-    QuizModel.initial(
-      question: 'What is type?',
-      answer: 'A framework',
-    ),
-  ];
+  // final List<QuizModel> quizzes = [
+  //   QuizModel.initial(
+  //     question: 'What is 1 + 1?',
+  //     answer: '2',
+  //   ),
+  //   QuizModel.initial(
+  //     question: 'Who is the creator of Flutter?',
+  //     answer: 'Google',
+  //   ),
+  //   QuizModel.initial(
+  //     question: 'What is Flutter?',
+  //     answer: 'A framework',
+  //   ),
+  //   QuizModel.initial(
+  //     question: 'What is type?',
+  //     answer: 'A framework',
+  //   ),
+  // ];
 
   @override
   Future<void> updateCollection(CollectionModel collection) async {
