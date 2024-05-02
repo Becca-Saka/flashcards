@@ -14,8 +14,9 @@ import '../../model/collection_model.dart';
 import '../../model/quiz_model.dart';
 
 abstract class IGeminiService {
-  Future<CollectionModel> uploadCollectionFiles(CollectionModel model);
-  Future<List<QuizModel>> generateQuiz(List<CollectionFile> files);
+  Future<CollectionModel> uploadCollectionFiles(
+      CollectionModel model, List<CollectionFile> collectionFiles);
+  Future<List<QuizModel>> generateQuiz(CollectionFile files);
 }
 
 class GeminiService extends IGeminiService {
@@ -51,7 +52,8 @@ class GeminiService extends IGeminiService {
   }
 
   @override
-  Future<CollectionModel> uploadCollectionFiles(CollectionModel model) async {
+  Future<CollectionModel> uploadCollectionFiles(
+      CollectionModel model, List<CollectionFile> collectionFiles) async {
     try {
       _log.d('generateQuiz');
 
@@ -65,7 +67,7 @@ class GeminiService extends IGeminiService {
 
       const api = 'https://www.googleapis.com/upload/storage/v1/b';
 
-      for (final file in model.files) {
+      for (final file in collectionFiles) {
         String location = '$fileFolderAndName/${file.name}';
         final url = '$api/$storageBucket/o?uploadType=media&name=$location';
 
@@ -75,13 +77,11 @@ class GeminiService extends IGeminiService {
           options: Options(
             headers: {
               "Authorization": "Bearer ${client.credentials.accessToken.data}",
-              "Content-Type": model.files.first.mimeType,
+              "Content-Type": file.mimeType,
             },
           ),
           data: fileContent,
         );
-
-        client.close();
 
         _log.d(res.data.toString());
         final result = res.data as Map<String, dynamic>;
@@ -90,10 +90,11 @@ class GeminiService extends IGeminiService {
         final filelink =
             "gs://${idSplit.sublist(0, idSplit.length - 1).join('/')}";
 
+        model.files.removeWhere((element) => element.id == file.id);
         files.add(file.copyWith(url: filelink));
       }
-
-      return model.copyWith(files: files);
+      client.close();
+      return model.copyWith(files: [...model.files, ...files]);
     } on FirebaseException catch (e) {
       _log.e(e);
       throw Exception(e.message);
@@ -107,7 +108,7 @@ class GeminiService extends IGeminiService {
   }
 
   @override
-  Future<List<QuizModel>> generateQuiz(List<CollectionFile> files) async {
+  Future<List<QuizModel>> generateQuiz(CollectionFile files) async {
     try {
       _log.d('generateQuiz');
       const vertexAiLocationId = "us-central1";
@@ -120,8 +121,8 @@ class GeminiService extends IGeminiService {
           {"text": Prompts.first},
           {
             "fileData": {
-              "mimeType": files.first.mimeType,
-              "fileUri": files.first.url,
+              "mimeType": files.mimeType,
+              "fileUri": files.url,
             },
           },
         ]
@@ -160,8 +161,8 @@ class GeminiService extends IGeminiService {
             }
           ],
           "generation_config": {
-            "temperature": 0.5,
-            "topP": 0.57,
+            "temperature": 0.4,
+            "topP": 1,
             "topK": 32,
             "maxOutputTokens": 2048,
           }

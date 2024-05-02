@@ -39,10 +39,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  style: AppTextStyle.extraBold16.copyWith(
-                    fontSize: 20,
+                Flexible(
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyle.extraBold16.copyWith(
+                      fontSize: 20,
+                    ),
                   ),
                 ),
                 if (actions != null) actions!,

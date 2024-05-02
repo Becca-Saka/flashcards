@@ -36,8 +36,8 @@ class QuizService extends IQuizService {
         throw Exception('Collection not found');
       }
 
-      final collection =
-          collections[collectionIndex].copyWith(quizzes: questions);
+      final collection = collections[collectionIndex].copyWith(
+          quizzes: collections[collectionIndex].quizzes..addAll(questions));
 
       await _collectionService.updateCollection(collection);
     } on Exception catch (e) {

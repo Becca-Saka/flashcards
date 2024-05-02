@@ -49,7 +49,7 @@ class AllCollectionView extends StatelessWidget {
                 )
               : Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 14.0)
-                      .copyWith(top: 30),
+                      .copyWith(top: 30, bottom: 50),
                   child: ListView.builder(
                     itemCount: controller.collections.length,
                     itemBuilder: (context, index) {
@@ -70,6 +70,8 @@ class AllCollectionView extends StatelessWidget {
                                     children: [
                                       Text(
                                         collection.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         style: AppTextStyle.extraBold16,
                                       ),
                                       const AppSpacing(v: 5),
@@ -82,7 +84,23 @@ class AllCollectionView extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                if (collection.files.isEmpty)
+                                AppSpacing.h8(),
+                                if (collection.quizzes.isNotEmpty)
+                                  InkWell(
+                                    onTap: () =>
+                                        controller.startQuiz(collection),
+                                    child: Column(
+                                      children: [
+                                        const PlayIcon(),
+                                        const AppSpacing(v: 4),
+                                        Text(
+                                          '${collection.quizzes.length} Questions',
+                                          style: AppTextStyle.semiBold10,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else
                                   InkWell(
                                     onTap: () => controller.addFiles(index),
                                     child: Column(
@@ -99,21 +117,6 @@ class AllCollectionView extends StatelessWidget {
                                       ],
                                     ),
                                   )
-                                else
-                                  InkWell(
-                                    onTap: () =>
-                                        controller.startQuiz(collection),
-                                    child: Column(
-                                      children: [
-                                        const PlayIcon(),
-                                        const AppSpacing(v: 4),
-                                        Text(
-                                          '${collection.quizzes.length} Questions',
-                                          style: AppTextStyle.semiBold10,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                               ],
                             ),
                           ),

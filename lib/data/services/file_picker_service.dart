@@ -12,8 +12,6 @@ class FilePickerService {
       allowedExtensions: [
         'pdf',
         'png',
-        'jpg',
-        'jpeg',
       ],
     );
 

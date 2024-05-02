@@ -5,6 +5,7 @@ import 'package:flashcards/app/set_up_dialog_ui.dart';
 import 'package:flashcards/data/services/collection_service.dart';
 import 'package:flashcards/data/services/file_picker_service.dart';
 import 'package:flashcards/model/collection_model.dart';
+import 'package:flashcards/model/quiz_model.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:logger/logger.dart';
 import 'package:stacked/stacked.dart';
@@ -69,27 +70,35 @@ class CollectionsViewModel extends BaseViewModel {
       final files = await _filePickerService.pickFile();
       if (files == null) return;
       if (files.isEmpty) return;
-
+      final collectionFiles = files
+          .map((e) => CollectionFile.initial(name: e.name, path: e.path))
+          .toList();
       await _collectionService.addAssetsToCollection(
         collections[index].uid,
-        files
-            .map((e) => CollectionFile.initial(name: e.name, path: e.path))
-            .toList(),
+        collectionFiles,
       );
       notifyListeners();
 
       /// Generate questions
-      final uploadedCollection =
-          await _geminiService.uploadCollectionFiles(collections[index]);
+      final uploadedCollection = await _geminiService.uploadCollectionFiles(
+        collections[index],
+        collectionFiles,
+      );
       await _collectionService.updateCollection(uploadedCollection);
 
-      /// generate questions
-      final questions =
-          await _geminiService.generateQuiz(uploadedCollection.files);
-      await _quizService.storeQuestions(uploadedCollection.uid, questions);
+      List<QuizModel> questionsList = [];
+      for (var item in collectionFiles) {
+        final questions = await _geminiService.generateQuiz(uploadedCollection
+            .files
+            .firstWhere((element) => element.id == item.id));
+
+        questionsList.addAll(questions);
+      }
+      await _quizService.storeQuestions(uploadedCollection.uid, questionsList);
       notifyListeners();
     } on Exception catch (e) {
       _log.e(e);
+      notifyListeners();
       _snackbarService.showCustomSnackBar(
         variant: SnackbarType.error,
         message: "Something went wrong",
@@ -180,6 +189,7 @@ class CollectionsViewModel extends BaseViewModel {
       openQuiz(collection: collection, shouldReset: true);
     } on Exception catch (e) {
       _log.e(e);
+      notifyListeners();
       _snackbarService.showCustomSnackBar(
         variant: SnackbarType.error,
         message: "Something went wrong",
