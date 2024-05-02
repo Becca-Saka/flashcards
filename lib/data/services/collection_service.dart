@@ -60,25 +60,6 @@ class CollectionService implements ICollectionService {
     }
   }
 
-  // final List<QuizModel> quizzes = [
-  //   QuizModel.initial(
-  //     question: 'What is 1 + 1?',
-  //     answer: '2',
-  //   ),
-  //   QuizModel.initial(
-  //     question: 'Who is the creator of Flutter?',
-  //     answer: 'Google',
-  //   ),
-  //   QuizModel.initial(
-  //     question: 'What is Flutter?',
-  //     answer: 'A framework',
-  //   ),
-  //   QuizModel.initial(
-  //     question: 'What is type?',
-  //     answer: 'A framework',
-  //   ),
-  // ];
-
   @override
   Future<void> updateCollection(CollectionModel collection) async {
     try {

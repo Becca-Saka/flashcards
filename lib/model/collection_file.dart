@@ -71,7 +71,7 @@ class CollectionFile {
   String get mimeType {
     return type == FileType.pdf
         ? 'application/pdf'
-        : 'image/${name.split('.').last}';
+        : 'image/${name.split('/').last.split('.').last.toLowerCase()}';
   }
 }
 
@@ -84,7 +84,6 @@ enum FileType {
   const FileType(this.value, this.mimeType);
 
   factory FileType.fromPath(String path) {
-    print(path.split('/').last.split('.').last);
     if (path.split('/').last.split('.').last == 'pdf') {
       return FileType.pdf;
     }

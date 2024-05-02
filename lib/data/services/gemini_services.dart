@@ -67,7 +67,6 @@ class GeminiService extends IGeminiService {
 
       for (final file in model.files) {
         String location = '$fileFolderAndName/${file.name}';
-        location = location.replaceAll(' ', '%20');
         final url = '$api/$storageBucket/o?uploadType=media&name=$location';
 
         final fileContent = await File(file.path).readAsBytes();
@@ -115,7 +114,19 @@ class GeminiService extends IGeminiService {
       final projectId = DefaultFirebaseOptions.currentPlatform.projectId;
       final client = await obtainAuthenticatedClient();
       _dio.interceptors.add(LogInterceptor(requestHeader: false));
-
+      final promptData = {
+        "role": "USER",
+        "parts": [
+          {"text": Prompts.first},
+          {
+            "fileData": {
+              "mimeType": files.first.mimeType,
+              "fileUri": files.first.url,
+            },
+          },
+        ]
+      };
+      _log.d('Prompt data: $promptData');
       final res = await _dio.post(
         "https://$vertexAiLocationId-aiplatform.googleapis.com/v1/projects/$projectId/locations/$vertexAiLocationId/publishers/google/models/gemini-1.0-pro-vision:generateContent",
         options: Options(
@@ -125,18 +136,19 @@ class GeminiService extends IGeminiService {
           },
         ),
         data: {
-          "contents": {
-            "role": "USER",
-            "parts": [
-              {"text": Prompts.first},
-              {
-                "fileData": {
-                  "mimeType": files.first.mimeType,
-                  "fileUri": files.first.url,
-                },
-              },
-            ]
-          },
+          "contents": promptData,
+          // "contents": {
+          //   "role": "USER",
+          //   "parts": [
+          //     {"text": Prompts.first},
+          //     {
+          //       "fileData": {
+          //         "mimeType": files.first.mimeType,
+          //         "fileUri": files.first.url,
+          //       },
+          //     },
+          //   ]
+          // },
           "safety_settings": [
             {
               "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
@@ -148,9 +160,9 @@ class GeminiService extends IGeminiService {
             }
           ],
           "generation_config": {
-            "temperature": 0.1,
-            "topP": 0.5,
-            "topK": 16,
+            "temperature": 0.5,
+            "topP": 0.57,
+            "topK": 32,
             "maxOutputTokens": 2048,
           }
         },
