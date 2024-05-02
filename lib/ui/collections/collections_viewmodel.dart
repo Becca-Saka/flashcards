@@ -12,7 +12,6 @@ import 'package:logger/logger.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-import '../../app/set_up_snackbar_ui.dart';
 import '../../data/services/gemini_services.dart';
 import '../../data/services/quiz_service.dart';
 import '../../model/collection_file.dart';
@@ -21,7 +20,6 @@ class CollectionsViewModel extends BaseViewModel {
   final DialogService _dialogService = locator<DialogService>();
   final NavigationService _navigationService = locator<NavigationService>();
   final FilePickerService _filePickerService = FilePickerService();
-  final SnackbarService _snackbarService = locator<SnackbarService>();
   final _collectionService = locator<ICollectionService>();
   final _geminiService = locator<IGeminiService>();
   final _quizService = locator<IQuizService>();
@@ -95,25 +93,29 @@ class CollectionsViewModel extends BaseViewModel {
       await _collectionService.updateCollection(uploadedCollection);
 
       for (var item in collectionFiles) {
-        final questions = await _geminiService.generateQuiz(uploadedCollection
-            .files
-            .firstWhere((element) => element.id == item.id));
+        try {
+          final questions = await _geminiService.generateQuiz(uploadedCollection
+              .files
+              .firstWhere((element) => element.id == item.id));
 
-        await _quizService.storeQuestions(
-          uploadedCollection.uid,
-          item.id,
-          questions,
-        );
+          await _quizService.storeQuestions(
+            uploadedCollection.uid,
+            item.id,
+            questions,
+          );
+        } catch (e) {
+          await _collectionService.removeAssetsFromCollection(
+            collections[index].uid,
+            item,
+          );
+          showErrorSnackbar("Failed to generate questions for ${item.name}");
+          continue;
+        }
       }
       notifyListeners();
     } on Exception catch (e) {
       _log.e(e);
-      notifyListeners();
-      _snackbarService.showCustomSnackBar(
-        variant: SnackbarType.error,
-        message: "Something went wrong",
-        duration: const Duration(seconds: 3),
-      );
+      showErrorSnackbar();
     } finally {
       setBusyForFileUpload(collections[index].uid, false);
       notifyListeners();
@@ -211,12 +213,7 @@ class CollectionsViewModel extends BaseViewModel {
       openQuiz(collection: collection, shouldReset: true);
     } on Exception catch (e) {
       _log.e(e);
-      notifyListeners();
-      _snackbarService.showCustomSnackBar(
-        variant: SnackbarType.error,
-        message: "Something went wrong",
-        duration: const Duration(seconds: 3),
-      );
+      showErrorSnackbar();
     }
   }
 }

@@ -15,11 +15,15 @@ class QuizView extends HookWidget {
   Widget build(BuildContext context) {
     final carouselController = CarouselController();
     final page = useValueNotifier(0);
-    final colors = [...Colors.primaries]..shuffle();
+
     return ViewModelBuilder<CollectionsViewModel>.reactive(
       viewModelBuilder: () => CollectionsViewModel(),
       onViewModelReady: (viewModel) => viewModel.initQuiz(carouselController),
       builder: (context, controller, child) {
+        final colors = List.generate(
+            controller.currentQuiz.length,
+            (index) => AppColors
+                .quizCardColors[index % AppColors.quizCardColors.length]);
         return Scaffold(
           appBar: CustomAppBar(
             title: '${controller.selectedCollection?.name}',
