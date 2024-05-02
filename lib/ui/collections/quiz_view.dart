@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flashcards/model/quiz_model.dart';
 import 'package:flashcards/shared/custom_expansion_tile.dart';
@@ -15,6 +13,7 @@ class QuizView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final carouselController = CarouselController();
+    final colors = [...Colors.primaries]..shuffle();
     return ViewModelBuilder<CollectionsViewModel>.reactive(
       viewModelBuilder: () => CollectionsViewModel(),
       onViewModelReady: (viewModel) => viewModel.initQuiz(carouselController),
@@ -41,7 +40,6 @@ class QuizView extends StatelessWidget {
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
             child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const AppSpacing(v: 40),
                 Text(
@@ -72,7 +70,8 @@ class QuizView extends StatelessWidget {
                   // shrinkWrap: true,
                   itemBuilder: (context, index, pageindex) {
                     final file = controller.selectedCollection!.quizzes[index];
-                    return QuestionCard(file: file, index: index);
+                    final color = colors[index];
+                    return QuestionCard(file: file, index: index, color: color);
                   },
                 ),
                 const AppSpacing(v: 40),
@@ -136,17 +135,19 @@ class QuestionCard extends StatelessWidget {
     super.key,
     required this.file,
     required this.index,
+    required this.color,
   });
 
   final QuizModel file;
   final int index;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.primaries[Random().nextInt(18)],
+      color: color,
       child: Container(
-        color: Colors.primaries[Random().nextInt(18)],
+        color: color,
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
