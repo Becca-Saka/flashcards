@@ -2,12 +2,15 @@ import 'dart:convert';
 
 import 'package:uuid/uuid.dart';
 
+import 'quiz_model.dart';
+
 class CollectionFile {
   final String id;
   final String name;
   final String path;
   final DateTime? updatedAt;
   final String? url;
+  final List<QuizModel> quizzes;
 
   CollectionFile({
     required this.id,
@@ -15,6 +18,7 @@ class CollectionFile {
     required this.path,
     this.updatedAt,
     this.url,
+    this.quizzes = const [],
   });
 
   CollectionFile.initial({
@@ -22,6 +26,7 @@ class CollectionFile {
     required this.path,
   })  : id = const Uuid().v4(),
         url = null,
+        quizzes = const [],
         updatedAt = DateTime.now();
 
   Map<String, dynamic> toMap() {
@@ -31,6 +36,7 @@ class CollectionFile {
       'path': path,
       'updated_at': updatedAt?.millisecondsSinceEpoch,
       'url': url,
+      'quizzes': quizzes.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -43,6 +49,8 @@ class CollectionFile {
           ? DateTime.fromMillisecondsSinceEpoch(map['updated_at'])
           : null,
       url: map['url'],
+      quizzes: List<QuizModel>.from(
+          map['quizzes']?.map((x) => QuizModel.fromMap(x)) ?? const []),
     );
   }
 
@@ -52,6 +60,7 @@ class CollectionFile {
     String? path,
     DateTime? updatedAt,
     String? url,
+    List<QuizModel>? quizzes,
   }) {
     return CollectionFile(
       id: id ?? this.id,
@@ -59,6 +68,7 @@ class CollectionFile {
       path: path ?? this.path,
       updatedAt: DateTime.now(),
       url: url ?? this.url,
+      quizzes: quizzes ?? this.quizzes,
     );
   }
 

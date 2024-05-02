@@ -12,8 +12,8 @@ class QuizResultView extends StatelessWidget {
     return ViewModelBuilder<CollectionsViewModel>.reactive(
       viewModelBuilder: () => CollectionsViewModel(),
       builder: (context, controller, child) {
-        final questionsCount = controller.selectedCollection!.quizzes.length;
-        final correctCount = controller.selectedCollection!.quizzes
+        final questionsCount = controller.currentQuiz.length;
+        final correctCount = controller.currentQuiz
             .where((quiz) => quiz.answeredCorrectly == true)
             .toList()
             .length;

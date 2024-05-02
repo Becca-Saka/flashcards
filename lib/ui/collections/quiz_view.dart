@@ -3,16 +3,18 @@ import 'package:flashcards/model/quiz_model.dart';
 import 'package:flashcards/shared/custom_expansion_tile.dart';
 import 'package:flashcards/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:stacked/stacked.dart';
 
 import 'collections_viewmodel.dart';
 
-class QuizView extends StatelessWidget {
+class QuizView extends HookWidget {
   const QuizView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final carouselController = CarouselController();
+    final page = useValueNotifier(0);
     final colors = [...Colors.primaries]..shuffle();
     return ViewModelBuilder<CollectionsViewModel>.reactive(
       viewModelBuilder: () => CollectionsViewModel(),
@@ -43,7 +45,7 @@ class QuizView extends StatelessWidget {
               children: [
                 const AppSpacing(v: 40),
                 Text(
-                  'Question ${controller.carouselPage + 1} of ${controller.selectedCollection?.quizzes.length}',
+                  'Question ${controller.carouselPage + 1} of ${controller.currentQuiz.length}',
                   style: AppTextStyle.extraBold16,
                 ),
                 const AppSpacing(v: 28),
@@ -62,14 +64,14 @@ class QuizView extends StatelessWidget {
                     autoPlayCurve: Curves.fastOutSlowIn,
                     enlargeCenterPage: true,
                     enlargeFactor: 0.3,
-                    onPageChanged: (page, reason) {},
+                    onPageChanged: (index, _) => page.value = index,
                     scrollDirection: Axis.horizontal,
                     scrollPhysics: const NeverScrollableScrollPhysics(),
                   ),
-                  itemCount: controller.selectedCollection!.quizzes.length,
+                  itemCount: controller.currentQuiz.length,
                   // shrinkWrap: true,
                   itemBuilder: (context, index, pageindex) {
-                    final file = controller.selectedCollection!.quizzes[index];
+                    final file = controller.currentQuiz[index];
                     final color = colors[index];
                     return QuestionCard(file: file, index: index, color: color);
                   },
@@ -94,8 +96,8 @@ class QuizView extends StatelessWidget {
                       shape: ButtonShape.circle,
                       backgroundColor: Colors.white,
                       padding: EdgeInsets.zero,
-                      onPressed: () =>
-                          controller.answerQuiz(carouselController, false),
+                      onPressed: () => controller.answerQuiz(carouselController,
+                          controller.currentQuiz[page.value], false),
                       child: const AppIcons(
                         icon: AppIconData.cancel,
                         size: 20,
@@ -111,8 +113,8 @@ class QuizView extends StatelessWidget {
                       shape: ButtonShape.circle,
                       backgroundColor: Colors.white,
                       padding: EdgeInsets.zero,
-                      onPressed: () =>
-                          controller.answerQuiz(carouselController, true),
+                      onPressed: () => controller.answerQuiz(carouselController,
+                          controller.currentQuiz[page.value], true),
                       child: const AppIcons(
                         icon: AppIconData.check,
                         size: 20,

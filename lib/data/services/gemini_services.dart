@@ -107,7 +107,7 @@ class GeminiService extends IGeminiService {
   }
 
   @override
-  Future<List<QuizModel>> generateQuiz(CollectionFile files) async {
+  Future<List<QuizModel>> generateQuiz(CollectionFile file) async {
     try {
       _log.d('generateQuiz');
       const vertexAiLocationId = "us-central1";
@@ -120,8 +120,8 @@ class GeminiService extends IGeminiService {
           {"text": Prompts.first},
           {
             "fileData": {
-              "mimeType": files.mimeType,
-              "fileUri": files.url,
+              "mimeType": file.mimeType,
+              "fileUri": file.url,
             },
           },
         ]
@@ -181,7 +181,7 @@ class GeminiService extends IGeminiService {
         client.close();
 
         return (cleanedData["flashcards"] as List)
-            .map((e) => QuizModel.fromMap(e, true))
+            .map((e) => QuizModel.fromGemini(e, file.id))
             .toList();
       } else {
         _log.e('Failed to parse data');

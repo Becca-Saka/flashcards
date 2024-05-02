@@ -32,6 +32,11 @@ class CollectionsViewModel extends BaseViewModel {
   CollectionModel? get selectedCollection =>
       _collectionService.currentCollection;
 
+  List<QuizModel> get currentQuiz {
+    if (selectedCollection == null) return [];
+    return _quizService.getAllQuestions(selectedCollection!.uid);
+  }
+
   String? collectionName;
   String? description;
 
@@ -70,6 +75,7 @@ class CollectionsViewModel extends BaseViewModel {
       final files = await _filePickerService.pickFile();
       if (files == null) return;
       if (files.isEmpty) return;
+
       final collectionFiles = files
           .map((e) => CollectionFile.initial(name: e.name, path: e.path))
           .toList();
@@ -88,15 +94,17 @@ class CollectionsViewModel extends BaseViewModel {
       );
       await _collectionService.updateCollection(uploadedCollection);
 
-      List<QuizModel> questionsList = [];
       for (var item in collectionFiles) {
         final questions = await _geminiService.generateQuiz(uploadedCollection
             .files
             .firstWhere((element) => element.id == item.id));
 
-        questionsList.addAll(questions);
+        await _quizService.storeQuestions(
+          uploadedCollection.uid,
+          item.id,
+          questions,
+        );
       }
-      await _quizService.storeQuestions(uploadedCollection.uid, questionsList);
       notifyListeners();
     } on Exception catch (e) {
       _log.e(e);
@@ -128,8 +136,9 @@ class CollectionsViewModel extends BaseViewModel {
   Future<void> startQuiz([CollectionModel? collection]) async {
     final coll = collection ?? selectedCollection;
     if (coll == null) return;
-    if (coll.quizzes.isEmpty) return;
-    if (coll.quizzes.any((quiz) => quiz.isAnswered)) {
+    final quizzes = coll.files.expand((e) => e.quizzes).toList();
+    if (quizzes.isEmpty) return;
+    if (quizzes.any((quiz) => quiz.isAnswered)) {
       final res = await _dialogService.showCustomDialog(
         variant: DialogType.quizProgress,
         barrierDismissible: true,
@@ -159,17 +168,22 @@ class CollectionsViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  void answerQuiz(CarouselController carouselController, bool isCorrect) {
+  void answerQuiz(
+    CarouselController carouselController,
+    QuizModel quiz,
+    bool isCorrect,
+  ) {
     _quizService.answerQuestion(
       selectedCollection!.uid,
-      selectedCollection!.quizzes[carouselPage].id,
+      quiz.fileId,
+      quiz.id,
       isCorrect,
     );
     _movePage(carouselController);
   }
 
   void _movePage(CarouselController carouselController) {
-    if (carouselPage == selectedCollection!.quizzes.length - 1) {
+    if (carouselPage == currentQuiz.length - 1) {
       _navigationService.navigateTo(AppRoutes.quizResult);
     } else {
       carouselController.nextPage();
@@ -181,9 +195,8 @@ class CollectionsViewModel extends BaseViewModel {
   void initQuiz(CarouselController carouselController) {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (selectedCollection != null &&
-          selectedCollection!.quizzes.any((quiz) => !quiz.isAnswered)) {
-        final index =
-            selectedCollection!.quizzes.indexWhere((quiz) => !quiz.isAnswered);
+          currentQuiz.any((quiz) => !quiz.isAnswered)) {
+        final index = currentQuiz.indexWhere((quiz) => !quiz.isAnswered);
         carouselController.jumpToPage(index);
         carouselPage = index;
         notifyListeners();

@@ -22,7 +22,7 @@ class CollectionView extends StatelessWidget {
             collection != null && controller.busyForFileUpload(collection.uid);
         return Scaffold(
           appBar: CustomAppBar(
-            title: '${controller.selectedCollection?.name}',
+            title: '${collection?.name}',
             actions: SizedBox(
               height: 30,
               child: TextButton(
@@ -42,8 +42,7 @@ class CollectionView extends StatelessWidget {
           floatingActionButton: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (controller.selectedCollection != null &&
-                  controller.selectedCollection!.files.isNotEmpty)
+              if (collection != null && collection.files.isNotEmpty)
                 FloatingActionButton(
                   elevation: 0,
                   shape: const CircleBorder(),
@@ -55,8 +54,8 @@ class CollectionView extends StatelessWidget {
                   ),
                 ),
               const AppSpacing(v: 30),
-              if (controller.selectedCollection != null &&
-                      controller.selectedCollection!.quizzes.isNotEmpty ||
+              if (collection != null &&
+                      collection.files.expand((e) => e.quizzes).isNotEmpty ||
                   isGeminiLoading)
                 FloatingActionButton(
                   elevation: 0,

@@ -89,7 +89,8 @@ class AllCollectionView extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            if (collection.quizzes.isNotEmpty ||
+                            if (collection.files
+                                    .any((e) => e.quizzes.isNotEmpty) ||
                                 isGeminiLoading)
                               InkWell(
                                 onTap: () => controller.startQuiz(collection),
@@ -99,7 +100,7 @@ class AllCollectionView extends StatelessWidget {
                                     if (!isGeminiLoading) ...[
                                       const AppSpacing(v: 4),
                                       Text(
-                                        '${collection.quizzes.length} Questions',
+                                        '${collection.files.expand((e) => e.quizzes).length} Questions',
                                         style: AppTextStyle.semiBold10,
                                       ),
                                     ]
