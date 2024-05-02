@@ -86,7 +86,23 @@ class AllCollectionView extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            if (collection.files.isEmpty)
+                            if (collection.quizzes.isNotEmpty)
+                              InkWell(
+                                onTap: () => controller.startQuiz(collection),
+                                child: Column(
+                                  children: [
+                                    PlayIcon(isLoading: isGeminiLoading),
+                                    if (!isGeminiLoading) ...[
+                                      const AppSpacing(v: 4),
+                                      Text(
+                                        '${collection.quizzes.length} Questions',
+                                        style: AppTextStyle.semiBold10,
+                                      ),
+                                    ]
+                                  ],
+                                ),
+                              )
+                            else
                               InkWell(
                                 onTap: () => controller.addFiles(index),
                                 child: Column(
@@ -103,22 +119,6 @@ class AllCollectionView extends StatelessWidget {
                                   ],
                                 ),
                               )
-                            else
-                              InkWell(
-                                onTap: () => controller.startQuiz(collection),
-                                child: Column(
-                                  children: [
-                                    PlayIcon(isLoading: isGeminiLoading),
-                                    if (!isGeminiLoading) ...[
-                                      const AppSpacing(v: 4),
-                                      Text(
-                                        '${collection.quizzes.length} Questions',
-                                        style: AppTextStyle.semiBold10,
-                                      ),
-                                    ]
-                                  ],
-                                ),
-                              ),
                           ],
                         ),
                       ),

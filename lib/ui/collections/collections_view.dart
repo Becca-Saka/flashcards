@@ -35,35 +35,36 @@ class CollectionView extends StatelessWidget {
               ),
             ),
           ),
-          floatingActionButton: collection == null || collection.files.isEmpty
-              ? null
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FloatingActionButton(
-                      elevation: 0,
-                      shape: const CircleBorder(),
-                      backgroundColor: AppColors.primaryColor,
-                      onPressed: controller.addFiles,
-                      child: const AppIcons(
-                        icon: AppIconData.save,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const AppSpacing(v: 30),
-                    // if (collection.quizzes.isNotEmpty)
-                    FloatingActionButton(
-                      elevation: 0,
-                      heroTag: null,
-                      shape: const CircleBorder(),
-                      backgroundColor: AppColors.black100,
-                      onPressed: controller.startQuiz,
-                      child: PlayIcon(
-                        isLoading: controller.busyForFileUpload(collection.uid),
-                      ),
-                    ),
-                  ],
+          floatingActionButton: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (controller.selectedCollection != null &&
+                  controller.selectedCollection!.files.isNotEmpty)
+                FloatingActionButton(
+                  elevation: 0,
+                  shape: const CircleBorder(),
+                  backgroundColor: AppColors.primaryColor,
+                  onPressed: controller.addFiles,
+                  child: const AppIcons(
+                    icon: AppIconData.save,
+                    color: Colors.white,
+                  ),
                 ),
+              const AppSpacing(v: 30),
+              if (controller.selectedCollection != null &&
+                  controller.selectedCollection!.quizzes.isNotEmpty)
+                FloatingActionButton(
+                  elevation: 0,
+                  heroTag: null,
+                  shape: const CircleBorder(),
+                  backgroundColor: AppColors.black100,
+                  onPressed: controller.startQuiz,
+                  child: PlayIcon(
+                    isLoading: controller.busyForFileUpload(collection!.uid),
+                  ),
+                ),
+            ],
+          ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
             child: collection == null || collection.files.isEmpty
@@ -95,7 +96,7 @@ class CollectionView extends StatelessWidget {
                               ),
                               const AppSpacing(v: 4),
                               Text(
-                                'Pdf or Images only',
+                                'Pdf or Png images only',
                                 style: AppTextStyle.regular10.copyWith(
                                   fontSize: 8,
                                   color: AppColors.primaryColor,
@@ -132,6 +133,8 @@ class CollectionView extends StatelessWidget {
                                   Expanded(
                                     child: Text(
                                       file.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                       style: AppTextStyle.regular14,
                                     ),
                                   ),
