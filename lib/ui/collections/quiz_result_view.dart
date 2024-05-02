@@ -61,6 +61,7 @@ class QuizResultView extends StatelessWidget {
                   const AppSpacing(v: 20),
                   Text(
                     'You answered $correctCount out of $questionsCount questions correctly!',
+                    textAlign: TextAlign.center,
                     style: AppTextStyle.regular16,
                   ),
                   const Spacer(flex: 2),
