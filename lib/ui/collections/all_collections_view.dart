@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/data/extensions/base_viewmodel_ext.dart';
 import 'package:flashcards/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +15,8 @@ class AllCollectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CollectionsViewModel>.reactive(
-      viewModelBuilder: () => CollectionsViewModel(),
+      viewModelBuilder: () => locator<CollectionsViewModel>(),
+      disposeViewModel: false,
       builder: (context, controller, child) {
         return Scaffold(
           appBar: const CustomAppBar(
@@ -59,6 +63,8 @@ class AllCollectionView extends StatelessWidget {
                   final collection = controller.collections[index];
                   final isGeminiLoading =
                       controller.busyForFileUpload(collection.uid);
+
+                  log(isGeminiLoading.toString());
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: InkWell(
@@ -86,7 +92,8 @@ class AllCollectionView extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            if (collection.quizzes.isNotEmpty)
+                            if (collection.quizzes.isNotEmpty ||
+                                isGeminiLoading)
                               InkWell(
                                 onTap: () => controller.startQuiz(collection),
                                 child: Column(

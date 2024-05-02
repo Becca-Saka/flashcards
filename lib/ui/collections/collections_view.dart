@@ -1,4 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/data/extensions/base_viewmodel_ext.dart';
 import 'package:flashcards/shared/shared.dart';
 import 'package:flashcards/ui/collections/widgets/play_icon.dart';
@@ -13,9 +14,11 @@ class CollectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CollectionsViewModel>.reactive(
-      viewModelBuilder: () => CollectionsViewModel(),
+      viewModelBuilder: () => locator<CollectionsViewModel>(),
+      disposeViewModel: false,
       builder: (context, controller, child) {
         final collection = controller.selectedCollection;
+        final isGeminiLoading = controller.busyForFileUpload(collection!.uid);
         return Scaffold(
           appBar: CustomAppBar(
             title: '${controller.selectedCollection?.name}',
@@ -52,7 +55,8 @@ class CollectionView extends StatelessWidget {
                 ),
               const AppSpacing(v: 30),
               if (controller.selectedCollection != null &&
-                  controller.selectedCollection!.quizzes.isNotEmpty)
+                      controller.selectedCollection!.quizzes.isNotEmpty ||
+                  isGeminiLoading)
                 FloatingActionButton(
                   elevation: 0,
                   heroTag: null,
@@ -60,14 +64,14 @@ class CollectionView extends StatelessWidget {
                   backgroundColor: AppColors.black100,
                   onPressed: controller.startQuiz,
                   child: PlayIcon(
-                    isLoading: controller.busyForFileUpload(collection!.uid),
+                    isLoading: controller.busyForFileUpload(collection.uid),
                   ),
                 ),
             ],
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            child: collection == null || collection.files.isEmpty
+            child: collection.files.isEmpty
                 ? Center(
                     child: InkWell(
                       onTap: controller.addFiles,
