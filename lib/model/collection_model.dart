@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:flashcards/model/quiz_model.dart';
 import 'package:uuid/uuid.dart';
 
 import 'collection_file.dart';
@@ -77,5 +78,12 @@ class CollectionModel extends Equatable {
       description,
       updatedAt,
     ];
+  }
+
+  List<QuizModel> get quiz => files.expand((e) => e.quizzes).toList();
+  double get score {
+    if (quiz.isEmpty) return 0;
+    final correct = quiz.where((q) => q.answeredCorrectly == true).length;
+    return correct / quiz.length;
   }
 }
