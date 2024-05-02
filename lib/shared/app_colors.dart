@@ -17,4 +17,7 @@ class AppColors {
   static const Color grey500 = Color(0xFF667085);
   static const Color grey900 = Color(0xFF101828);
   static const Color peachColor = Color(0xFFC26986);
+
+  static List<Color> get quizCardColors =>
+      [...Colors.primaries]..remove(Colors.yellow);
 }
