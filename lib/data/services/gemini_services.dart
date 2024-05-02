@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flashcards/model/collection_file.dart';
 import 'package:flashcards/shared/prompts.dart';
-import 'package:flutter/material.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:logger/logger.dart';
 
@@ -174,8 +173,6 @@ class GeminiService extends IGeminiService {
       String data = datax as String;
       final firstJsonBracket = data.indexOf('{');
       int lastJsonBracket = data.lastIndexOf('}');
-
-      debugPrint('${data.length} $firstJsonBracket $lastJsonBracket');
       if (lastJsonBracket == -1) lastJsonBracket = data.length;
       if (firstJsonBracket != -1 && lastJsonBracket != -1) {
         data = data.substring(firstJsonBracket, lastJsonBracket + 1);
@@ -187,7 +184,8 @@ class GeminiService extends IGeminiService {
             .map((e) => QuizModel.fromMap(e, true))
             .toList();
       } else {
-        return [];
+        _log.e('Failed to parse data');
+        throw Exception('Something went wrong');
       }
     } on DioException catch (e) {
       _log.e(e.response?.data);

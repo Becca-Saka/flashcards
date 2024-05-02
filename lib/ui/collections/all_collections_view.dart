@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flashcards/app/locator.dart';
 import 'package:flashcards/data/extensions/base_viewmodel_ext.dart';
 import 'package:flashcards/shared/shared.dart';
@@ -64,7 +62,6 @@ class AllCollectionView extends StatelessWidget {
                   final isGeminiLoading =
                       controller.busyForFileUpload(collection.uid);
 
-                  log(isGeminiLoading.toString());
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: InkWell(

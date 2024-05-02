@@ -18,7 +18,8 @@ class CollectionView extends StatelessWidget {
       disposeViewModel: false,
       builder: (context, controller, child) {
         final collection = controller.selectedCollection;
-        final isGeminiLoading = controller.busyForFileUpload(collection!.uid);
+        final isGeminiLoading =
+            collection != null && controller.busyForFileUpload(collection.uid);
         return Scaffold(
           appBar: CustomAppBar(
             title: '${controller.selectedCollection?.name}',
@@ -64,14 +65,14 @@ class CollectionView extends StatelessWidget {
                   backgroundColor: AppColors.black100,
                   onPressed: controller.startQuiz,
                   child: PlayIcon(
-                    isLoading: controller.busyForFileUpload(collection.uid),
+                    isLoading: isGeminiLoading,
                   ),
                 ),
             ],
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            child: collection.files.isEmpty
+            child: collection == null || collection.files.isEmpty
                 ? Center(
                     child: InkWell(
                       onTap: controller.addFiles,
